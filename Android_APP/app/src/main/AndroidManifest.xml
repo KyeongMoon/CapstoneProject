@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AccessLogActivity"></activity>
+        <activity android:name=".CreateLoginNumberActivity" />
+        <activity android:name=".CreateOTPActivity" />
+        <activity android:name=".RemoteLogoutActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

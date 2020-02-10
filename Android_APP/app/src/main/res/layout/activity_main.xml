@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/moveRemoteLogoutButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="원격 로그아웃"
+        android:onClick="moveRemoteLogoutActivity"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/moveCreateOTPButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OTP 생성"
+        android:onClick="moveCreateOTPActivity"/>
+
+    <Button
+        android:id="@+id/moveCreateLoginNumberButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1회용 로그인 번호 생성"
+        android:onClick="moveCreateLoginNumberActivity"/>
+
+    <Button
+        android:id="@+id/moveAccessLogButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="접속 로그인 위치 확인"
+        android:onClick="moveAccessLogActivity"/>
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="스마트폰과 연동 인증(구현 x)" />
+
+</LinearLayout>
