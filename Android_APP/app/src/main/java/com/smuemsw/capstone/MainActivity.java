@@ -2,7 +2,6 @@ package com.smuemsw.capstone;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -48,5 +47,9 @@ public class MainActivity extends AppCompatActivity {
     public void moveAccessLogActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AccessLogActivity.class);
         startActivity(intent);
+    }
+
+    public void moveFingerTestActivity(View view) {
+        startActivity(new Intent(MainActivity.this,  FingerTestActivity.class));
     }
 }
