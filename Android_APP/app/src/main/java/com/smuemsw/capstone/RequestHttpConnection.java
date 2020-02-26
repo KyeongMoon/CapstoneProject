@@ -2,6 +2,8 @@ package com.smuemsw.capstone;
 
 import android.content.ContentValues;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +18,10 @@ public class RequestHttpConnection {
         HttpURLConnection urlConn = null;
 
         StringBuffer sbParams = new StringBuffer();
+
+        String page = "";
+
+
 
         /**
          * 1. StringBuffer에 파라미터 연결
@@ -39,8 +45,6 @@ public class RequestHttpConnection {
                 if (isAnd)
                     sbParams.append("&");
 
-                sbParams.append(key).append("=").append(value);
-
                 // 파라미터가 2개 이상이면 isAnd를 true로 바꾸고 다음 루프부터 &를 붙인다.
                 if (!isAnd)
                     if (_params.size() >= 2)
@@ -58,19 +62,38 @@ public class RequestHttpConnection {
             // [2-1]. urlConn 설정.
             urlConn.setRequestMethod("POST"); // URL 요청에 대한 메소드 설정 : POST.
             urlConn.setRequestProperty("Accept-Charset", "UTF-8"); // Accept-Charset 설정.
-            urlConn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
+//            urlConn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            urlConn.setRequestProperty("Context_Type", "application/json;charset=UTF-8");
+
+
+
+            //전송 테스트
+            String id = "Kyung Moon";
+            String pwd = "01230123";
+            JSONData jsonData = new JSONData();
+            jsonData.setId(id);
+            jsonData.setPwd(pwd);
+            ObjectMapper mapper = new ObjectMapper();
+            String sendData = mapper.writeValueAsString(jsonData);
+
+            //전송 데이터 출력
+            page += "SEND\n" + sendData + "\n";
+
+
+
 
             // [2-2]. parameter 전달 및 데이터 읽어오기.
-            String strParams = sbParams.toString(); //sbParams에 정리한 파라미터들을 스트링으로 저장. 예)id=id1&pw=123;
+            //String strParams = sbParams.toString(); //sbParams에 정리한 파라미터들을 스트링으로 저장. 예)id=id1&pw=123;
             OutputStream os = urlConn.getOutputStream();
-            os.write(strParams.getBytes("UTF-8")); // 출력 스트림에 출력.
+            os.write(sendData.getBytes("UTF-8")); // 출력 스트림에 출력.
             os.flush(); // 출력 스트림을 플러시(비운다)하고 버퍼링 된 모든 출력 바이트를 강제 실행.
             os.close(); // 출력 스트림을 닫고 모든 시스템 자원을 해제.
 
+
             // [2-3]. 연결 요청 확인.
-            // 실패 시 null을 리턴하고 메서드를 종료.
+            // 실패 시 (실패 string)null을 리턴하고 메서드를 종료.
             if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK)
-                return null;
+                return "HTTP_OK 실패";
 
             // [2-4]. 읽어온 결과물 리턴.
             // 요청한 URL의 출력물을 BufferedReader로 받는다.
@@ -78,11 +101,11 @@ public class RequestHttpConnection {
 
             // 출력물의 라인과 그 합에 대한 변수.
             String line;
-            String page = "";
 
             // 라인을 받아와 합친다.
+
             while ((line = reader.readLine()) != null){
-                page += line;
+                page += line + "\n";
             }
 
             return page;
@@ -96,7 +119,7 @@ public class RequestHttpConnection {
                 urlConn.disconnect();
         }
 
-        return null;
+        return page + "연결실패";
 
     }
 }

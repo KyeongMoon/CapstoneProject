@@ -19,6 +19,7 @@
         android:id="@+id/remoteLogoutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="원격 로그아웃" />
+        android:text="원격 로그아웃"
+        android:onClick="testbutton"/>
 
 </LinearLayout>

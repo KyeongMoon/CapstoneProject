@@ -1,19 +1,32 @@
 package com.smuemsw.capstone;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class RemoteLogoutActivity extends AppCompatActivity {
 
     TextView logoutTextView;
     Button logoutButton;
+    String test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +37,7 @@ public class RemoteLogoutActivity extends AppCompatActivity {
         logoutButton = (Button) findViewById(R.id.remoteLogoutButton);
 
         //URL 설정.
-        String url = "http://18.221.178.47:8080/";
+        String url = "http://18.218.11.150:8080/checkIN/send";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         NetworkTask networkTask = new NetworkTask(url, null);
