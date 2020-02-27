@@ -1,11 +1,15 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.http;
 
 import android.content.ContentValues;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.capstone.android.checkin.data.JSONData;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -62,13 +66,14 @@ public class RequestHttpConnection {
             // [2-1]. urlConn 설정.
             urlConn.setRequestMethod("POST"); // URL 요청에 대한 메소드 설정 : POST.
             urlConn.setRequestProperty("Accept-Charset", "UTF-8"); // Accept-Charset 설정.
-//            urlConn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;charset=UTF-8");
-            urlConn.setRequestProperty("Context_Type", "application/json;charset=UTF-8");
+            //urlConn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            //urlConn.setRequestProperty("Content_Type", "application/json;charset=UTF-8");
+            urlConn.setRequestProperty("Context_Type", "application/json");
 
 
 
             //전송 테스트
-            String id = "Kyung Moon";
+            String id = "Kyeong Mun";
             String pwd = "01230123";
             JSONData jsonData = new JSONData();
             jsonData.setId(id);
@@ -80,20 +85,39 @@ public class RequestHttpConnection {
             page += "SEND\n" + sendData + "\n";
 
 
+            String fk = "{\"arr\" : null, \"id\" : \"kk\", \"list\" : null, \"pwd\" : null}";
 
 
             // [2-2]. parameter 전달 및 데이터 읽어오기.
             //String strParams = sbParams.toString(); //sbParams에 정리한 파라미터들을 스트링으로 저장. 예)id=id1&pw=123;
             OutputStream os = urlConn.getOutputStream();
-            os.write(sendData.getBytes("UTF-8")); // 출력 스트림에 출력.
+            os.write(fk.getBytes("UTF-8")); // 출력 스트림에 출력.
             os.flush(); // 출력 스트림을 플러시(비운다)하고 버퍼링 된 모든 출력 바이트를 강제 실행.
             os.close(); // 출력 스트림을 닫고 모든 시스템 자원을 해제.
 
 
             // [2-3]. 연결 요청 확인.
             // 실패 시 (실패 string)null을 리턴하고 메서드를 종료.
-            if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK)
-                return "HTTP_OK 실패";
+//            if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK)
+//                return "HTTP_OK 실패";
+
+
+            if(urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+            } else {
+                InputStream is = urlConn.getErrorStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] byteBuffer = new byte[1024];
+                byte[] byteData = null;
+                int nLength = 0;
+                while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                    baos.write(byteBuffer, 0, nLength);
+                }
+                byteData = baos.toByteArray();
+                String response = new String(byteData);
+                page += "에러" + response;
+            }
+
 
             // [2-4]. 읽어온 결과물 리턴.
             // 요청한 URL의 출력물을 BufferedReader로 받는다.

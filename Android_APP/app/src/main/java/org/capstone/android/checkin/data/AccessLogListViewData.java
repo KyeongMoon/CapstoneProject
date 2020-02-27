@@ -1,4 +1,4 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.data;
 
 public class AccessLogListViewData {
     private String time;

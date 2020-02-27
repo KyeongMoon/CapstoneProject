@@ -1,9 +1,8 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
 
 import android.Manifest;
 import android.app.KeyguardManager;
@@ -15,6 +14,10 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.widget.TextView;
+
+import com.smuemsw.capstone.R;
+
+import org.capstone.android.checkin.handler.FingerTestHandler;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;

@@ -1,12 +1,14 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.smuemsw.capstone.R;
+
+import org.capstone.android.checkin.adapter.AccessLogListViewAdapter;
+import org.capstone.android.checkin.data.AccessLogListViewData;
 
 import java.util.ArrayList;
 

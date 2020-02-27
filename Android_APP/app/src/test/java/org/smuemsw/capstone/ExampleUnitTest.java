@@ -1,4 +1,4 @@
-package com.smuemsw.capstone;
+package org.smuemsw.capstone;
 
 import org.junit.Test;
 

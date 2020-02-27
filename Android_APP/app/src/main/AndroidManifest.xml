@@ -16,12 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FingerTestActivity"></activity>
-        <activity android:name=".AccessLogActivity" />
-        <activity android:name=".CreateLoginNumberActivity" />
-        <activity android:name=".CreateOTPActivity" />
-        <activity android:name=".RemoteLogoutActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name="org.capstone.android.checkin.activity.FingerTestActivity"></activity>
+        <activity android:name="org.capstone.android.checkin.activity.AccessLogActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.CreateLoginNumberActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.CreateOTPActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.RemoteLogoutActivity" />
+        <activity android:name="org.capstone.android.checkin.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

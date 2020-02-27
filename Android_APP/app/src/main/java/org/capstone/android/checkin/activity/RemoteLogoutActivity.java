@@ -1,4 +1,4 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.activity;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.smuemsw.capstone.R;
+
+import org.capstone.android.checkin.http.RequestHttpConnection;
 
 public class RemoteLogoutActivity extends AppCompatActivity {
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateOTPActivity"
+    tools:context="org.capstone.android.checkin.activity.CreateOTPActivity"
     android:orientation="vertical">
 
     <TextView

@@ -1,4 +1,4 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.data;
 
 import java.util.ArrayList;
 

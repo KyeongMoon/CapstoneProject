@@ -1,4 +1,4 @@
-package com.smuemsw.capstone;
+package org.capstone.android.checkin.handler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,7 +8,8 @@ import android.os.CancellationSignal;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
+
+import com.smuemsw.capstone.R;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FingerTestHandler extends FingerprintManager.AuthenticationCallback {
