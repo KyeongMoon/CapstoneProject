@@ -2,12 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.capstone.android.checkin">
 
+    <!--지문인식, 인터넷-->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"></application>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <activity android:name="org.capstone.android.checkin.activity.FingerTestActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.AccessLogActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.CreateLoginNumberActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.CreateOTPActivity" />
+        <activity android:name="org.capstone.android.checkin.activity.RemoteLogoutActivity" />
+        <activity android:name="org.capstone.android.checkin.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
 
 </manifest>

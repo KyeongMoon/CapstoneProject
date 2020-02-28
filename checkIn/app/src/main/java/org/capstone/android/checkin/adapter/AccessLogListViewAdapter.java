@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.smuemsw.capstone.R;
 
+import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.data.AccessLogListViewData;
 
 import java.util.ArrayList;

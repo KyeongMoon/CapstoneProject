@@ -5,8 +5,7 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.smuemsw.capstone.R;
-
+import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.adapter.AccessLogListViewAdapter;
 import org.capstone.android.checkin.data.AccessLogListViewData;
 
@@ -24,14 +23,14 @@ public class AccessLogActivity extends AppCompatActivity {
         this.MakeSampleData();
 
         ListView listView = findViewById(R.id.accessLogListView);
-        final AccessLogListViewAdapter accessLogListViewAdapter = new AccessLogListViewAdapter(this,accessLogDataList);
+        final AccessLogListViewAdapter accessLogListViewAdapter = new AccessLogListViewAdapter(this, accessLogDataList);
 
         listView.setAdapter(accessLogListViewAdapter);
 
 
     }
 
-    public void MakeSampleData(){
+    public void MakeSampleData() {
         accessLogDataList = new ArrayList<AccessLogListViewData>();
 
         accessLogDataList.add(new AccessLogListViewData("시간 1", "IP 1", "위치 1"));

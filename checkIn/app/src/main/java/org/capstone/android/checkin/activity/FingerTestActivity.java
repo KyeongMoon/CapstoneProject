@@ -15,8 +15,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.smuemsw.capstone.R;
 
+import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.handler.FingerTestHandler;
 
 import java.io.IOException;

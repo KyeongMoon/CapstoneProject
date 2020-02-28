@@ -8,8 +8,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.smuemsw.capstone.R;
-
+import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.http.RequestHttpConnection;
 
 public class RemoteLogoutActivity extends AppCompatActivity {

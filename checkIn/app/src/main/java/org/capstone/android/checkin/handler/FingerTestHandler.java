@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
-import com.smuemsw.capstone.R;
+import org.capstone.android.checkin.R;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FingerTestHandler extends FingerprintManager.AuthenticationCallback {

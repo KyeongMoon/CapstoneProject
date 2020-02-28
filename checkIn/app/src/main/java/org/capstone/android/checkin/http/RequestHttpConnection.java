@@ -64,12 +64,12 @@ public class RequestHttpConnection {
             urlConn = (HttpURLConnection) url.openConnection();
 
             // [2-1]. urlConn 설정.
-            urlConn.setRequestMethod("POST"); // URL 요청에 대한 메소드 설정 : POST.
+            urlConn.setRequestMethod("GET"); // URL 요청에 대한 메소드 설정 : POST.
             urlConn.setRequestProperty("Accept-Charset", "UTF-8"); // Accept-Charset 설정.
             //urlConn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;charset=UTF-8");
             //urlConn.setRequestProperty("Content_Type", "application/json;charset=UTF-8");
             urlConn.setRequestProperty("Context_Type", "application/json");
-
+            urlConn.setDoOutput(true);
 
 
             //전송 테스트
@@ -85,13 +85,14 @@ public class RequestHttpConnection {
             page += "SEND\n" + sendData + "\n";
 
 
-            String fk = "{\"arr\" : null, \"id\" : \"kk\", \"list\" : null, \"pwd\" : null}";
-
 
             // [2-2]. parameter 전달 및 데이터 읽어오기.
             //String strParams = sbParams.toString(); //sbParams에 정리한 파라미터들을 스트링으로 저장. 예)id=id1&pw=123;
+            page += "2-2";
             OutputStream os = urlConn.getOutputStream();
-            os.write(fk.getBytes("UTF-8")); // 출력 스트림에 출력.
+            page += "2-2";
+            os.write(sendData.getBytes("UTF-8")); // 출력 스트림에 출력.
+            page += "2-2";
             os.flush(); // 출력 스트림을 플러시(비운다)하고 버퍼링 된 모든 출력 바이트를 강제 실행.
             os.close(); // 출력 스트림을 닫고 모든 시스템 자원을 해제.
 
@@ -101,10 +102,11 @@ public class RequestHttpConnection {
 //            if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK)
 //                return "HTTP_OK 실패";
 
-
+            page += "2-3";
             if(urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
             } else {
+                //에러난 문구 출력
                 InputStream is = urlConn.getErrorStream();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 byte[] byteBuffer = new byte[1024];
@@ -122,7 +124,7 @@ public class RequestHttpConnection {
             // [2-4]. 읽어온 결과물 리턴.
             // 요청한 URL의 출력물을 BufferedReader로 받는다.
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), "UTF-8"));
-
+            page += "2-4";
             // 출력물의 라인과 그 합에 대한 변수.
             String line;
 

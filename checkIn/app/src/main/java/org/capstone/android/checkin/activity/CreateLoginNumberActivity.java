@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.smuemsw.capstone.R;
+import org.capstone.android.checkin.R;
 
 public class CreateLoginNumberActivity extends AppCompatActivity {
 
