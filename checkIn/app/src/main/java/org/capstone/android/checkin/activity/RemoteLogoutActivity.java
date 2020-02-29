@@ -36,9 +36,9 @@ public class RemoteLogoutActivity extends AppCompatActivity {
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
         private String url;
-        private ContentValues values;
+        private Object values;
 
-        public NetworkTask(String url, ContentValues values) {
+        public NetworkTask(String url, Object values) {
 
             this.url = url;
             this.values = values;
