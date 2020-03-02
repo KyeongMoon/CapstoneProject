@@ -3,4 +3,29 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+
+
+    <color name="colorTextWhite">#FFFFFF</color>
+
+    <color name="colorMain">#43A047</color>
+
+
+    <color name="colorGreen">#00AF66</color>
+
+
+
+
+    <color name="colorBackground">#242424</color>
+
+
+    <color name="colorTopBlack">#171717</color>
+
+
+    <!-- 메뉴 라인 -->
+    <color name="colorMenuLine">#444444</color>
+
+    <!-- 상단바 회색-->
+    <color name="colorToolBar">#4F4F4F</color>
+
 </resources>

@@ -9,9 +9,11 @@ import android.media.UnsupportedSchemeException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -41,6 +43,9 @@ import javax.crypto.spec.SecretKeySpec;
 public class CreateOTPActivity extends AppCompatActivity {
 
     TextView otpTextView;
+    TextView otpProgressbarSec;
+    ProgressBar otpProgressBar;
+    CountDownTimer mCountDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +53,10 @@ public class CreateOTPActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_otp);
 
         otpTextView = findViewById(R.id.createOTPTextView);
+        otpProgressbarSec = findViewById(R.id.OTPProgressbarSec);
+        otpProgressBar = (ProgressBar) findViewById(R.id.OTPProgressbar);
 
-        //키 생성인데 사실상 필요없고 기기값 가져와서 전송해주자.
-        HashMap map = this.generate("user", "host");
-        otpTextView.setText(map.get("encodedKey").toString());
-
-
+        String encodedWidevineId = "";
 
 
         //기기 키값 받아오는 내용
@@ -69,37 +72,53 @@ public class CreateOTPActivity extends AppCompatActivity {
             String aa = widevineId.toString();
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                String encodedWidevineId = Base64.getEncoder().encodeToString(widevineId).trim();
-
-                otpTextView.setText("start " +widevineId.length+"\n"+ widevineId +"\n" + aa +"\n");
+                encodedWidevineId = Base64.getEncoder().encodeToString(widevineId).trim();
             }
         } catch (UnsupportedSchemeException e) {
             e.printStackTrace();
         }
 
 
+        //TODO : final로 선언해줘야 타이머 안에 돌아가는데 원래 이값은 로그인할때 정리가 되어있어야한다. 혹은 sharedpreference에 저장된 값 불러오기
+        final String finalEncodedWidevineId = encodedWidevineId;
 
+        mCountDownTimer = new CountDownTimer(1000 * 60 * 60, 1000) {
+            int i = 61;
 
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.v("Log_tag", "Tick of Progress" + i + millisUntilFinished);
+
+                if (i == 0 || i == 61) {
+                    //TODO: otp 갱신 작성
+                    int OTP = UpdateOTP(finalEncodedWidevineId);
+                    otpTextView.setText(Integer.toString(OTP));
+                    i = 60;
+                }
+                otpProgressBar.setProgress(i);
+                otpProgressbarSec.setText(i + " 초");
+                i--;
+            }
+
+            @Override
+            public void onFinish() {
+                //nothing
+            }
+        };
+        mCountDownTimer.start();
+
+    }
+
+    private static int UpdateOTP(String UUID) {
+        long time = new Date().getTime();
         try {
-            //URL 설정.
-            String url = "http://18.218.11.150:8080/checkIN/otp";
-
-            OtpJSONData otpData = new OtpJSONData();
-            long time = new Date().getTime();
-            int ret = verify_code("[B@9909bab",time);
-
-            otpData.setOtpCode(Integer.toString(ret));
-            otpData.setOtpKey("[B@9909bab");
-
-            // AsyncTask를 통해 HttpURLConnection 수행.
-            NetworkTask networkTask = new NetworkTask(url, otpData);
-            networkTask.execute();
-
+            return verify_code(UUID, time);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public static int verify_code(String key, long t) throws NoSuchAlgorithmException, InvalidKeyException {
@@ -127,56 +146,6 @@ public class CreateOTPActivity extends AppCompatActivity {
         truncatedHash %= 1000000;
 
         return (int) truncatedHash;
-    }
-
-    public class NetworkTask extends AsyncTask<Void, Void, String> {
-
-        private String url;
-        private Object values;
-
-        public NetworkTask(String url, Object values) {
-
-            this.url = url;
-            this.values = values;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            String result; // 요청 결과를 저장할 변수.
-            RequestHttpConnection requestHttpURLConnection = new RequestHttpConnection();
-            result = requestHttpURLConnection.request(url, values); // 해당 URL로 부터 결과물을 얻어온다.
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-            otpTextView.setText(s);
-        }
-    }
-
-    public HashMap<String, String> generate(String userName, String hostName) {
-        HashMap<String, String> map = new HashMap<String, String>();
-        byte[] buffer = new byte[5 + 5 * 5];
-        new Random().nextBytes(buffer);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Base64.Encoder encoder = Base64.getEncoder();
-            byte[] secretKey = Arrays.copyOf(buffer, 10);
-            byte[] bEncodedKey = encoder.encode(secretKey);
-
-            String encodedKey = new String(bEncodedKey);
-            String url = "url";
-
-            map.put("encodedKey", encodedKey);
-
-        }
-
-        return map;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

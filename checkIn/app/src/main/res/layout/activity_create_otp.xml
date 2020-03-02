@@ -4,8 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.capstone.android.checkin.activity.CreateOTPActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="org.capstone.android.checkin.activity.CreateOTPActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorTopBlack"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_arrow_back_black_24dp" />
+
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="OTP 생성"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="인증번호"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="22dp" />
 
     <TextView
         android:id="@+id/createOTPTextView"
@@ -13,12 +59,73 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textAlignment="center"
-        android:textSize="30dp" />
+        android:textColor="#000000"
+        android:textSize="60dp" />
 
-    <Button
-        android:id="@+id/createOTPButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="OTP 생성" />
+        android:layout_marginTop="18dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" />
+
+        <ProgressBar
+            android:id="@+id/OTPProgressbar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:layout_weight="0.6"
+            android:max="60" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" />
+
+        <TextView
+            android:id="@+id/OTPProgressbarSec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:text="60 초"
+            android:textAlignment="viewEnd" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineHeight="22dp"
+        android:text="유효시간 내에 인증 번호를 입력하세요.\n시간을 초과한 경우 새로 발급된 인증 번호를\n다시 입력하셔야 합니다."
+        android:textAlignment="center"
+        android:textSize="13dp" />
 
 </LinearLayout>

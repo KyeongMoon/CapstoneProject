@@ -1,6 +1,5 @@
 package org.capstone.android.checkin.activity;
 
-import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.capstone.android.checkin.R;
+import org.capstone.android.checkin.data.JSONData;
 import org.capstone.android.checkin.http.RequestHttpConnection;
 
 public class RemoteLogoutActivity extends AppCompatActivity {
@@ -27,8 +27,12 @@ public class RemoteLogoutActivity extends AppCompatActivity {
         //URL 설정.
         String url = "http://18.218.11.150:8080/checkIN/send";
 
+        JSONData accountData = new JSONData("user_id", "user_pw", null, null);
+
+
+
         // AsyncTask를 통해 HttpURLConnection 수행.
-        NetworkTask networkTask = new NetworkTask(url, null);
+        NetworkTask networkTask = new NetworkTask(url, accountData);
         networkTask.execute();
 
     }

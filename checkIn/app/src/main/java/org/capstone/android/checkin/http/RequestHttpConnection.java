@@ -1,11 +1,6 @@
 package org.capstone.android.checkin.http;
 
-import android.content.ContentValues;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.capstone.android.checkin.data.JSONData;
-import org.capstone.android.checkin.data.OtpJSONData;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -16,22 +11,15 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.Map;
-
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 public class RequestHttpConnection {
     public String request(String _url, Object _params){
         HttpURLConnection urlConn = null;
         String page = "";
 
+
         /**
-         * 2. HttpURLConnection을 통해 web의 데이터를 가져온다.
+         * 1. HttpURLConnection을 통해 web의 데이터를 가져온다.
          * */
         try{
             URL url = new URL(_url);

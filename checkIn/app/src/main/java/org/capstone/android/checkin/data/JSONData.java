@@ -9,6 +9,13 @@ public class JSONData {
     private ArrayList<String> list;
     private String[] arr;
 
+    public JSONData(String id, String pwd, ArrayList<String> list, String[] arr) {
+        this.id = id;
+        this.pwd = pwd;
+        this.list = list;
+        this.arr = arr;
+    }
+
     public String getId() {
         return id;
     }

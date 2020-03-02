@@ -85,8 +85,6 @@ public class FingerTestActivity extends AppCompatActivity {
     }
 
 
-    //현재 프로젝트가 21레벨이기 때문에 강제 23레벨 이상 만들기
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean cipherInit() {
         try {
             cipher = Cipher.getInstance(
@@ -111,7 +109,6 @@ public class FingerTestActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     protected void generateKey(){
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
