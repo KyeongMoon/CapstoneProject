@@ -1,10 +1,10 @@
 package org.capstone.android.checkin.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +16,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //최초 로그인인 경우 지문 등록을 물어본다.
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        if(!preferences.getBoolean("fingerPrint", false)){
+            editor.putBoolean("fingerPrint", true);
+            editor.commit();
+
+            startActivity(new Intent(MainActivity.this, FingerTestActivity.class));
+        }
+
 
 //        //원격 로그아웃
 //        ImageView remoteLogoutButton = findViewById(R.id.moveRemoteLogoutButton);

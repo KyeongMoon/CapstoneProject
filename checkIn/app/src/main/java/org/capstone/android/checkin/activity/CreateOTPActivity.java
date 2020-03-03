@@ -1,16 +1,11 @@
 package org.capstone.android.checkin.activity;
 
-import android.Manifest;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.media.MediaDrm;
 import android.media.UnsupportedSchemeException;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -19,20 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.capstone.android.checkin.R;
-import org.capstone.android.checkin.data.OtpJSONData;
-import org.capstone.android.checkin.http.RequestHttpConnection;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Permission;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.crypto.Mac;

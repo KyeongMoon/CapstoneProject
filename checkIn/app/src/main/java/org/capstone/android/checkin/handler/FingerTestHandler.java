@@ -3,16 +3,13 @@ package org.capstone.android.checkin.handler;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
-
 import org.capstone.android.checkin.R;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
-public class FingerTestHandler extends FingerprintManager.AuthenticationCallback {
+public class FingerTestHandler extends FingerprintManager.AuthenticationCallback
+{
     CancellationSignal cancellationSignal;
     private Context context;
 

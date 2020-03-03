@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,10 +21,15 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
+    private static final String id_test = "qw";
+    private static final String pw_test = "12";
+
     EditText _emailText;
     EditText _passwordText;
     Button _loginButton;
-    TextView _signupLink;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,14 @@ public class LoginActivity extends AppCompatActivity {
         _passwordText = findViewById(R.id.input_password);
         _loginButton = findViewById(R.id.btn_login);
 
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+
+        Toast.makeText(this, "why", Toast.LENGTH_SHORT);
+        String a = preferences.getString("testId", "fail");
+        _loginButton.setText(a);
+
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -40,22 +55,35 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
+        already();
+    }
 
-
+    //TODO : 자동 로그인 구현, id와 pw를 받아 서버에 접속 요청하기
+    public void already(){
+        String id = preferences.getString("id", "user_id");
+        String pw = preferences.getString("pw","user_pw");
     }
 
     public void login() {
+
+
+        editor.putString("testId", _emailText.getText().toString());
+        editor.commit();
+
+
         Log.d(TAG, "Login");
 
         //페이지 넘기고 수정
-        startActivity(new Intent(LoginActivity.this ,MainActivity.class));
-        finish();
+//        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//        finish();
 
-        // TODO : 로그인 알고리즘 파악하고 수정하기
-        if (!validate()) {
-            onLoginFailed();
-            return;
-        }
+
+        // TODO : 이메일, 비밀번호 형식을 잘못 입력한 경우 오류메세지를 출력할지.
+        //아이디 비밀번호 형식이 유효하지 않다면 Toast 를 띄우고 종료
+//        if (!validate()) {
+//            onLoginFailed();
+//            return;
+//        }
 
         _loginButton.setEnabled(false);
 
@@ -68,16 +96,23 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
+        //3초동안 progressbar 돌리기,그리고 현재화면 종료 TODO: 3초뒤 프로세스가 마무리 되는것이기 때문에 이전에 WAS와 통신을 하고 결과 bit만 아래에 넘겨줄 것.
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
+                        if(email.equals(id_test) && password.equals(pw_test))
+                            onLoginSuccess();
+                        else
+                            onLoginFailed();
+
+
                         // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
+                        //onLoginSuccess();
                         // onLoginFailed();
                         progressDialog.dismiss();
                     }
@@ -106,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
     }
 
@@ -136,5 +172,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    public void moveFingerTestActivity(View view) {
+        startActivity(new Intent(LoginActivity.this, FingerTestActivity.class));
     }
 }

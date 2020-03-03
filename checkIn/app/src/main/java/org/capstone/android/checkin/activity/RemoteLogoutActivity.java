@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.data.JSONData;
-import org.capstone.android.checkin.http.RequestHttpConnection;
+import org.capstone.android.checkin.http.NetworkTask;
+
+import java.util.concurrent.ExecutionException;
 
 public class RemoteLogoutActivity extends AppCompatActivity {
 
@@ -33,37 +35,13 @@ public class RemoteLogoutActivity extends AppCompatActivity {
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         NetworkTask networkTask = new NetworkTask(url, accountData);
-        networkTask.execute();
-
-    }
-
-    public class NetworkTask extends AsyncTask<Void, Void, String> {
-
-        private String url;
-        private Object values;
-
-        public NetworkTask(String url, Object values) {
-
-            this.url = url;
-            this.values = values;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            String result; // 요청 결과를 저장할 변수.
-            RequestHttpConnection requestHttpURLConnection = new RequestHttpConnection();
-            result = requestHttpURLConnection.request(url, values); // 해당 URL로 부터 결과물을 얻어온다.
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-            logoutTextView.setText(s);
+        AsyncTask<Void,Void, String> a = networkTask.execute();
+        try {
+            logoutTextView.setText(a.get());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -55,33 +55,30 @@ public class FingerTestActivity extends AppCompatActivity {
 
         fingerTestActivityTextView = findViewById(R.id.fingerTestTextView);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-            keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+        keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
-            if (!fingerprintManager.isHardwareDetected()) {
-                fingerTestActivityTextView.setText("지문을 사용할 수 없는 디바이스 입니다.");
-            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                fingerTestActivityTextView.setText("지문사용을 허용해 주세요");
-            } else if (!keyguardManager.isKeyguardSecure()) {
-                fingerTestActivityTextView.setText("잠금화면을 설정해주세요");
-            } else if (!fingerprintManager.hasEnrolledFingerprints()) {
-                fingerTestActivityTextView.setText("등록된 지문이 없습니다.");
-            } else {
-                fingerTestActivityTextView.setText("손가락을 홈 버튼에 대주세요");
+        // 지문부터가 가능한지 확인
+        if (!fingerprintManager.isHardwareDetected()) {
+            fingerTestActivityTextView.setText("지문을 사용할 수 없는 디바이스 입니다.");
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            fingerTestActivityTextView.setText("지문사용을 허용해 주세요");
+        } else if (!keyguardManager.isKeyguardSecure()) {
+            fingerTestActivityTextView.setText("잠금화면을 설정해주세요");
+        } else if (!fingerprintManager.hasEnrolledFingerprints()) {
+            fingerTestActivityTextView.setText("등록된 지문이 없습니다.");
+        } else {
+            fingerTestActivityTextView.setText("손가락을 홈 버튼에 대주세요");
 
-                generateKey();
+            generateKey();
 
-                if (cipherInit()) {
-                    cryptoObject = new FingerprintManager.CryptoObject(cipher);
+            if (cipherInit()) {
+                cryptoObject = new FingerprintManager.CryptoObject(cipher);
 
-                    FingerTestHandler fingerTestHandler = new FingerTestHandler(this);
-                    fingerTestHandler.startAuto(fingerprintManager, cryptoObject);
-                }
+                FingerTestHandler fingerTestHandler = new FingerTestHandler(this);
+                fingerTestHandler.startAuto(fingerprintManager, cryptoObject);
             }
         }
-
-
     }
 
 
@@ -100,16 +97,16 @@ public class FingerTestActivity extends AppCompatActivity {
             SecretKey key = (SecretKey) keyStore.getKey(KEY_NAME, null);
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return true;
-        } catch (KeyPermanentlyInvalidatedException e){
+        } catch (KeyPermanentlyInvalidatedException e) {
             return false;
         } catch (KeyStoreException | CertificateException
-        | UnrecoverableKeyException | IOException
-        | NoSuchAlgorithmException | InvalidKeyException e){
+                | UnrecoverableKeyException | IOException
+                | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("Failed to init Cipher", e);
         }
     }
 
-    protected void generateKey(){
+    protected void generateKey() {
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
         } catch (KeyStoreException e) {
@@ -124,10 +121,10 @@ public class FingerTestActivity extends AppCompatActivity {
         try {
             keyStore.load(null);
             keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,
-                    KeyProperties.PURPOSE_ENCRYPT|
-                    KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC).setUserAuthenticationRequired(true).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).build());
+                    KeyProperties.PURPOSE_ENCRYPT |
+                            KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC).setUserAuthenticationRequired(true).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).build());
             keyGenerator.generateKey();
-        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | CertificateException |IOException e){
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | CertificateException | IOException e) {
             throw new RuntimeException(e);
         }
     }
