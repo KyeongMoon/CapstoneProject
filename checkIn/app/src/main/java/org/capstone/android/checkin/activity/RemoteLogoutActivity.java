@@ -2,6 +2,7 @@ package org.capstone.android.checkin.activity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -43,5 +44,9 @@ public class RemoteLogoutActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void FinishActivity(View view) {
+        finish();
     }
 }

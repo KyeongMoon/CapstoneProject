@@ -21,26 +21,14 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
+
+        //첫번째 로그인인 경우
         if(!preferences.getBoolean("fingerPrint", false)){
             editor.putBoolean("fingerPrint", true);
             editor.commit();
 
             startActivity(new Intent(MainActivity.this, FingerTestActivity.class));
         }
-
-
-//        //원격 로그아웃
-//        ImageView remoteLogoutButton = findViewById(R.id.moveRemoteLogoutButton);
-//
-//        //OTP 생성
-//        ImageButton createOTPButton = findViewById(R.id.moveCreateOTPButton);
-//
-//        //1회용 로그인 번호 생성
-//        ImageView createLoginNumberButton = findViewById(R.id.moveCreateLoginNumberButton);
-//
-//        //접속 로그 확인
-//        ImageButton accessLogButton = findViewById(R.id.moveAccessLogButton);
-
 
     }
 

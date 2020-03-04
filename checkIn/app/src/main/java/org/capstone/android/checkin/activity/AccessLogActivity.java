@@ -1,6 +1,7 @@
 package org.capstone.android.checkin.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,4 +39,7 @@ public class AccessLogActivity extends AppCompatActivity {
         accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
     }
 
+    public void FinishActivity(View view) {
+        finish();
+    }
 }

@@ -10,12 +10,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorTopBlack"
-        android:orientation="horizontal">
+        android:background="@color/colorActionBar"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <RelativeLayout
             android:layout_width="50dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:onClick="FinishActivity">
 
             <ImageView
                 android:layout_width="32dp"
@@ -30,64 +32,59 @@
             android:layout_width="20dp"
             android:layout_height="match_parent" />
 
+
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="0.7"
             android:gravity="center_vertical"
-            android:text="지문으로 자동로그인"
+            android:text="지문으로 로그인"
             android:textColor="@color/colorTextWhite"
             android:textSize="20dp" />
 
+        <Switch
+            android:id="@+id/fingerTestSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:track="@drawable/switch_track_selector"
+            android:thumb="@drawable/switch_thumb"/>
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="1">
+        android:layout_height="match_parent">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center|center_vertical"
-                android:src="@drawable/ic_fingerprint" />
-
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="자동 로그인으로 지문 인식을 사용합니다.\n 다음 로그인부터 지문을 사용하여 편리하게 접속 할 수 있습니다."
-            android:textAlignment="center"
-            android:textSize="15dp" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center|center_vertical"
+            android:src="@drawable/ic_fingerprint_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.19" />
 
         <TextView
             android:id="@+id/fingerTestTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="자동 로그인으로 지문 인식을 사용합니다.\n 다음 로그인부터 지문을 사용하여 편리하게 접속 할 수 있습니다."
+            android:layout_marginTop="50dp"
             android:textAlignment="center"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageView2" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
