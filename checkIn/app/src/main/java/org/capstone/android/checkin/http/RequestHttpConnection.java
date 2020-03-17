@@ -1,5 +1,10 @@
 package org.capstone.android.checkin.http;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -11,8 +16,20 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
+//TODO : Appcompat 추가
 public class RequestHttpConnection {
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
+    public String request(String _url, Object _params, Context mcontext) {
+        preferences = PreferenceManager.getDefaultSharedPreferences(mcontext);
+        editor = preferences.edit();
+        return request(_url, _params);
+    }
+
     public String request(String _url, Object _params){
         HttpURLConnection urlConn = null;
         String page = "";
@@ -33,6 +50,17 @@ public class RequestHttpConnection {
             urlConn.setRequestProperty("Context_Type", "application/json");
             urlConn.setDoOutput(true);
 
+            String tt = preferences.getString("Authorization", "fuck");
+
+            if(!tt.equals("fuck")) {
+                Log.d("wwwwwwwww",tt);
+                urlConn.addRequestProperty("Authorization", tt);
+                urlConn.setRequestProperty("Authorization", tt);
+                urlConn.addRequestProperty("jwt", tt);
+                urlConn.setRequestProperty("jwt", tt);
+                editor.putString("Authorization", "fuck");
+                editor.commit();
+            }
 
             //전달받은 객체를 json 형식 String으로 전환
             ObjectMapper mapper = new ObjectMapper();
@@ -84,6 +112,16 @@ public class RequestHttpConnection {
             page += "2-4";
             // 출력물의 라인과 그 합에 대한 변수.
             String line;
+
+            if(tt.equals("fuck")){
+                Map <String, List<String>> headers = urlConn.getHeaderFields();
+                List<String> ttt = headers.get("Authorization");
+                Log.d("jwtttttt", ttt.get(0));
+                editor.putString("Authorization", ttt.get(0));
+                editor.commit();
+                page += ttt.get(0);
+            }
+
 
             // 라인을 받아와 합친다.
 

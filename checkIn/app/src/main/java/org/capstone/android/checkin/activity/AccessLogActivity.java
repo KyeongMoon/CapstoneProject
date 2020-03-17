@@ -26,6 +26,8 @@ public class AccessLogActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.accessLogListView);
         final AccessLogListViewAdapter accessLogListViewAdapter = new AccessLogListViewAdapter(this, accessLogDataList);
 
+        //TODO : 원격 로그아웃 통신 및 layout 수정
+
         listView.setAdapter(accessLogListViewAdapter);
 
 
@@ -36,6 +38,25 @@ public class AccessLogActivity extends AppCompatActivity {
 
         accessLogDataList.add(new AccessLogListViewData("시간 1", "IP 1", "위치 1"));
         accessLogDataList.add(new AccessLogListViewData("시간 2", "IP 2", "위치 2"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
+        accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
         accessLogDataList.add(new AccessLogListViewData("시간 3", "IP 3", "위치 3"));
     }
 

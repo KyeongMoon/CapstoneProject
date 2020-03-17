@@ -38,4 +38,7 @@ dependencies {
 
     //bio
     implementation 'androidx.biometric:biometric:1.0.1'
+
+    //preference
+    implementation 'androidx.preference:preference:1.1.0-alpha04'
 }

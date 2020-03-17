@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaDrm;
 import android.media.UnsupportedSchemeException;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -19,11 +19,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
+import androidx.preference.PreferenceManager;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.capstone.android.checkin.R;
+import org.capstone.android.checkin.data.LoginJSONData;
+import org.capstone.android.checkin.http.NetworkTask;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -36,40 +43,106 @@ public class LoginActivity extends AppCompatActivity {
     private static final String id_test = "qw";
     private static final String pw_test = "12";
 
-    EditText _emailText;
-    EditText _passwordText;
-    Button _loginButton;
-
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+
+    EditText emailTextView;
+    EditText passwordTextView;
+    Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        _emailText = findViewById(R.id.input_email);
-        _passwordText = findViewById(R.id.input_password);
-        _loginButton = findViewById(R.id.btn_login);
+        emailTextView = findViewById(R.id.input_email);
+        passwordTextView = findViewById(R.id.input_password);
+        loginButton = findViewById(R.id.btn_login);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
+        autoLogin();
 
-        getUUID();
-        already();
+        SharedPreferences a = getSharedPreferences("123", Context.MODE_PRIVATE);
+        SharedPreferences.Editor aa = a.edit();
 
-        _loginButton.setOnClickListener(new View.OnClickListener() {
+        emailTextView.setText(a.getString("asdf","1"));
 
+        aa.putString("asdf", "asdf");
+        aa.commit();
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                login(emailTextView.getText().toString(), passwordTextView.getText().toString());
             }
         });
     }
 
-    //TODO : 첫 로그인 이후 항상 자동 로그인 구현, 로컬에 있는 정보를 받아 id와 pw를 받아 서버에 접속 요청하기
-    public void already() {
+    public void login(String email, String password) {
+        Log.d(TAG, "Login");
 
+        // TODO : 이메일, 비밀번호 형식을 잘못 입력한 경우 오류메세지를 출력할지.
+        //아이디 비밀번호 형식이 유효하지 않다면 Toast 를 띄우고 종료
+//        if (!validate()) {
+//            onLoginFailed();
+//            return;
+//        }
+
+        loginButton.setEnabled(false);
+
+        //R.style.AppTheme_Dark_Dialog
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.Theme_AppCompat_DayNight_Dialog);
+
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+
+        // TODO: Implement your own authentication logic here.
+        int loginBit = 0;
+
+        // TODO 주소 수정
+        String url = "http://18.218.11.150:8080/checkIN/signIn";
+        LoginJSONData loginData = new LoginJSONData(email, password, getUUID());
+        NetworkTask networkTask = new NetworkTask(url, loginData);
+        AsyncTask<Void, Void, String> networkResult = networkTask.execute();
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            LoginJSONData result = mapper.readValue(networkResult.get(), LoginJSONData.class);
+            if (!result.isResult())
+                onLoginFailed();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //3초동안 progressbar 돌리기,그리고 현재화면 종료 TODO: 3초뒤 프로세스가 마무리 되는것이기 때문에 이전에 WAS와 통신을 하고 결과 bit만 아래에 넘겨줄 것.
+        final int finalLoginBit = loginBit;
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        if (finalLoginBit == 1) {
+                            onLoginSuccess();
+                        } else
+                            onLoginFailed();
+
+
+                        // On complete call either onLoginSuccess or onLoginFailed
+                        //onLoginSuccess();
+                        // onLoginFailed();
+                        progressDialog.dismiss();
+                    }
+                }, 1000);
+    }
+
+    // autologin 상태확인 TRUE : 지문까지 일치하면 서버 연결 이후 토큰값 받기 2. FALSE : 서버연결이후 토큰값
+    //TODO : 첫 로그인 이후 항상 자동 로그인 구현, 로컬에 있는 정보를 받아 id와 pw를 받아 서버에 접속 요청하기
+    public void autoLogin() {
         String id = preferences.getString("id", "null");
         String pw = preferences.getString("pw", "null");
         Boolean useFingerPrint = preferences.getBoolean("useFingerPrint", false);
@@ -107,6 +180,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                     super.onAuthenticationSucceeded(result);
+                    //지문이 성공 했을때
+
                     onLoginSuccess();
                 }
 
@@ -149,61 +224,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void login() {
-        Log.d(TAG, "Login");
-
-        // TODO : 이메일, 비밀번호 형식을 잘못 입력한 경우 오류메세지를 출력할지.
-        //아이디 비밀번호 형식이 유효하지 않다면 Toast 를 띄우고 종료
-//        if (!validate()) {
-//            onLoginFailed();
-//            return;
-//        }
-
-        _loginButton.setEnabled(false);
-
-        //R.style.AppTheme_Dark_Dialog
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.Theme_AppCompat_DayNight_Dialog);
-
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
-
-
-
-        // TODO: Implement your own authentication logic here.
-        int loginBit = 0;
-
-        if (email.equals(id_test) && password.equals(pw_test)) {
-            editor.putString("id", email);
-            editor.putString("pw", password);
-            editor.commit();
-            loginBit = 1;
-        } else {
-            onLoginFailed();
-            return;
-        }
-        //3초동안 progressbar 돌리기,그리고 현재화면 종료 TODO: 3초뒤 프로세스가 마무리 되는것이기 때문에 이전에 WAS와 통신을 하고 결과 bit만 아래에 넘겨줄 것.
-        final int finalLoginBit = loginBit;
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        if (finalLoginBit == 1) {
-                            onLoginSuccess();
-                        } else
-                            onLoginFailed();
-
-
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        //onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 1000);
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -225,7 +245,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
+        loginButton.setEnabled(true);
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
     }
@@ -233,35 +253,32 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
-        _loginButton.setEnabled(true);
+        loginButton.setEnabled(true);
     }
 
     public boolean validate() {
         boolean valid = true;
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String email = emailTextView.getText().toString();
+        String password = passwordTextView.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            emailTextView.setError("enter a valid email address");
             valid = false;
         } else {
-            _emailText.setError(null);
+            emailTextView.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            passwordTextView.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
-            _passwordText.setError(null);
+            passwordTextView.setError(null);
         }
 
         return valid;
     }
 
-    public void moveFingerTestActivity(View view) {
-        startActivity(new Intent(LoginActivity.this, FingerTestActivity.class));
-    }
 
     private String getUUID() {
         String encodedWidevineId = "";
