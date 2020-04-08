@@ -41,4 +41,6 @@ dependencies {
 
     //preference
     implementation 'androidx.preference:preference:1.1.0-alpha04'
+
+    //Retrofit2
 }

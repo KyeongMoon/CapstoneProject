@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
@@ -17,8 +16,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 
+import org.capstone.android.checkin.MyApplication;
 import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.handler.FingerTestHandler;
 
@@ -65,7 +66,7 @@ public class FingerTestActivity extends AppCompatActivity {
         fingerTestActivityTextView = findViewById(R.id.fingerTestTextView);
         fingerSwitch = findViewById(R.id.fingerTestSwitch);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
         editor = preferences.edit();
 
         //activity switch값 조정

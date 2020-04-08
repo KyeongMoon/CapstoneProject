@@ -23,6 +23,7 @@ import androidx.preference.PreferenceManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.capstone.android.checkin.MyApplication;
 import org.capstone.android.checkin.R;
 import org.capstone.android.checkin.data.LoginJSONData;
 import org.capstone.android.checkin.http.NetworkTask;
@@ -38,10 +39,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
-
-    //TODO : 임시 아이디와 비밀번호 , 보안성을 가진 sharedpreference사용하기
-    private static final String id_test = "qw";
-    private static final String pw_test = "12";
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -59,17 +56,10 @@ public class LoginActivity extends AppCompatActivity {
         passwordTextView = findViewById(R.id.input_password);
         loginButton = findViewById(R.id.btn_login);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
         editor = preferences.edit();
+
         autoLogin();
-
-        SharedPreferences a = getSharedPreferences("123", Context.MODE_PRIVATE);
-        SharedPreferences.Editor aa = a.edit();
-
-        emailTextView.setText(a.getString("asdf","1"));
-
-        aa.putString("asdf", "asdf");
-        aa.commit();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void login(String email, String password) {
+    public void login(final String email, final String password) {
         Log.d(TAG, "Login");
 
         // TODO : 이메일, 비밀번호 형식을 잘못 입력한 경우 오류메세지를 출력할지.
@@ -110,9 +100,10 @@ public class LoginActivity extends AppCompatActivity {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
+//            Log.d("LoginResult", networkResult.get());
             LoginJSONData result = mapper.readValue(networkResult.get(), LoginJSONData.class);
-            if (!result.isResult())
-                onLoginFailed();
+            if (result.isResult())
+                loginBit = 1;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -121,13 +112,17 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //3초동안 progressbar 돌리기,그리고 현재화면 종료 TODO: 3초뒤 프로세스가 마무리 되는것이기 때문에 이전에 WAS와 통신을 하고 결과 bit만 아래에 넘겨줄 것.
+        //TODO: 3초뒤 프로세스가 마무리 되는것이기 때문에 이전에 WAS와 통신을 하고 결과 bit만 아래에 넘겨줄 것.
         final int finalLoginBit = loginBit;
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         if (finalLoginBit == 1) {
                             onLoginSuccess();
+                            editor.putString("id",email);
+                            editor.putString("pw",password);
+                            editor.commit();
+
                         } else
                             onLoginFailed();
 
@@ -147,6 +142,9 @@ public class LoginActivity extends AppCompatActivity {
         String pw = preferences.getString("pw", "null");
         Boolean useFingerPrint = preferences.getBoolean("useFingerPrint", false);
 
+        Log.d(TAG, id);
+        Log.d(TAG, pw);
+        Log.d(TAG, useFingerPrint.toString());
 
         //TODO : Dialog빌더로 만들까 말까
         //지문등록을 했고, 로그인을 했을 경우 2차인증을 실시한다.

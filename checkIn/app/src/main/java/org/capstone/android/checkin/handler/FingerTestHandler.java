@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.CancellationSignal;
-import android.preference.PreferenceManager;
 import android.widget.TextView;
 
+import androidx.preference.PreferenceManager;
+
+import org.capstone.android.checkin.MyApplication;
 import org.capstone.android.checkin.R;
 
 public class FingerTestHandler extends FingerprintManager.AuthenticationCallback
@@ -40,7 +42,7 @@ public class FingerTestHandler extends FingerprintManager.AuthenticationCallback
     @Override
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
         this.update("지문이 등록되었습니다.", true);
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
         editor = preferences.edit();
         editor.putBoolean("useFingerPrint", true);
         editor.commit();

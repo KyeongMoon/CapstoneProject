@@ -38,7 +38,7 @@ public class RemoteLogoutActivity extends AppCompatActivity {
         LoginJSONData accountData = new LoginJSONData("abcd@naver.com", "1234", "1234567");
 
         // AsyncTask를 통해 HttpURLConnection 수행.
-        NetworkTask networkTask = new NetworkTask(url1, accountData, getApplicationContext());
+        NetworkTask networkTask = new NetworkTask(url1, accountData);
         AsyncTask<Void,Void, String> a = networkTask.execute();
         try {
             logoutTextView.setText(a.get());
@@ -62,7 +62,7 @@ public class RemoteLogoutActivity extends AppCompatActivity {
                 LoginJSONData accountData2 = new LoginJSONData("abcd@naver.com", "1234", "123");
 
                 // AsyncTask를 통해 HttpURLConnection 수행.
-                NetworkTask networkTask2 = new NetworkTask(url2, accountData2,getApplicationContext());
+                NetworkTask networkTask2 = new NetworkTask(url2, accountData2);
                 AsyncTask<Void,Void, String> a2 = networkTask2.execute();
                 try {
                     logoutTextView.setText(a2.get());

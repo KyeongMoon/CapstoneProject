@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:name = "org.capstone.android.checkin.MyApplication"><!-- singleton myapplication-->
+
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +31,7 @@
         <activity android:name=".activity.CreateOTPActivity" />
         <activity android:name=".activity.RemoteLogoutActivity" />
         <activity android:name=".activity.MainActivity"/>
+
     </application>
 
 </manifest>

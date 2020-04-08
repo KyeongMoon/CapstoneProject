@@ -1,11 +1,13 @@
 package org.capstone.android.checkin.http;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.capstone.android.checkin.MyApplication;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -16,24 +18,19 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
-//TODO : Appcompat 추가
 public class RequestHttpConnection {
+
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
-    public String request(String _url, Object _params, Context mcontext) {
-        preferences = PreferenceManager.getDefaultSharedPreferences(mcontext);
-        editor = preferences.edit();
-        return request(_url, _params);
-    }
-
     public String request(String _url, Object _params){
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        editor = preferences.edit();
+
         HttpURLConnection urlConn = null;
         String page = "";
-
 
         /**
          * 1. HttpURLConnection을 통해 web의 데이터를 가져온다.
@@ -52,6 +49,7 @@ public class RequestHttpConnection {
 
             String tt = preferences.getString("Authorization", "fuck");
 
+            //TODO : 송신할 경우 수정
             if(!tt.equals("fuck")) {
                 Log.d("wwwwwwwww",tt);
                 urlConn.addRequestProperty("Authorization", tt);
@@ -66,18 +64,12 @@ public class RequestHttpConnection {
             ObjectMapper mapper = new ObjectMapper();
             String sendData = mapper.writeValueAsString(_params);
 
-            //전송 데이터 출력
-            page += "SEND\n" + sendData + "\n";
-
-
+            Log.d("RequestHttpConnection", sendData);
 
             // [2-2]. parameter 전달 및 데이터 읽어오기.
             //String strParams = sbParams.toString(); //sbParams에 정리한 파라미터들을 스트링으로 저장. 예)id=id1&pw=123;
-            page += "2-2";
             OutputStream os = urlConn.getOutputStream();
-            page += "2-2";
             os.write(sendData.getBytes("UTF-8")); // 출력 스트림에 출력.
-            page += "2-2";
             os.flush(); // 출력 스트림을 플러시(비운다)하고 버퍼링 된 모든 출력 바이트를 강제 실행.
             os.close(); // 출력 스트림을 닫고 모든 시스템 자원을 해제.
 
@@ -87,7 +79,6 @@ public class RequestHttpConnection {
 //            if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK)
 //                return "HTTP_OK 실패";
 
-            page += "2-3";
             if(urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
             } else {
@@ -102,32 +93,29 @@ public class RequestHttpConnection {
                 }
                 byteData = baos.toByteArray();
                 String response = new String(byteData);
-                page += "에러" + response;
+                return response;
             }
 
 
             // [2-4]. 읽어온 결과물 리턴.
             // 요청한 URL의 출력물을 BufferedReader로 받는다.
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), "UTF-8"));
-            page += "2-4";
             // 출력물의 라인과 그 합에 대한 변수.
             String line;
 
             if(tt.equals("fuck")){
-                Map <String, List<String>> headers = urlConn.getHeaderFields();
-                List<String> ttt = headers.get("Authorization");
-                Log.d("jwtttttt", ttt.get(0));
-                editor.putString("Authorization", ttt.get(0));
+//                String a = urlConn.getHeaderField("Authorization");
+//                Log.d("jwtttttt", a);
+//                editor.putString("Authorization", a);
                 editor.commit();
-                page += ttt.get(0);
             }
 
 
             // 라인을 받아와 합친다.
-
             while ((line = reader.readLine()) != null){
                 page += line + "\n";
             }
+            Log.d("RequestHttpConnection", page);
 
             return page;
 
@@ -140,7 +128,8 @@ public class RequestHttpConnection {
                 urlConn.disconnect();
         }
 
-        return page + "연결실패";
+
+        return null;
 
     }
 }

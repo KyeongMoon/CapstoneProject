@@ -82,7 +82,6 @@ public class CreateOTPActivity extends AppCompatActivity {
         return -1;
     }
 
-    //TODO : 1분을 주기로 생성 및 6자리 고정, 서버에 알려주기
     public static int verify_code(String key, long t) throws NoSuchAlgorithmException, InvalidKeyException {
         byte[] data = new byte[8];
         long value = t / 1000;
@@ -129,6 +128,7 @@ public class CreateOTPActivity extends AppCompatActivity {
     }
 
     public void FinishActivity(View view) {
+        mCountDownTimer.onFinish();
         finish();
     }
 }
