@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.capstone.android.checkin">
-    <!-- 지문인식, 인터넷, 단말정보, 지문인식-->
+    package="org.checkinserviceteam.android.checkin">
+    <!-- 지문인식, 인터넷, 단말정보, 지문인식 -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
         android:allowBackup="true"
@@ -14,10 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        android:name = "org.capstone.android.checkin.MyApplication"><!-- singleton myapplication-->
+        android:usesCleartextTraffic="true">
 
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,13 +24,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.FingerTestActivity" />
         <activity android:name=".activity.AccessLogActivity" />
-        <activity android:name=".activity.CreateLoginNumberActivity" />
-        <activity android:name=".activity.CreateOTPActivity" />
         <activity android:name=".activity.RemoteLogoutActivity" />
-        <activity android:name=".activity.MainActivity"/>
-
+        <activity android:name=".activity.CreateLoginNumberActivity" />
+        <activity android:name=".activity.FingerLoginActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.CreateOTPActivity" />
     </application>
 
 </manifest>

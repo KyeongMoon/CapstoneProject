@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="org.capstone.android.checkin.activity.AccessLogActivity">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,8 +40,9 @@
 
     </LinearLayout>
 
+    <!-- TODO : 필요여부에 따라 삭제-->
     <TextView
-        android:id="@+id/accessLogTextView"
+        android:id="@+id/activity_access_log_tv_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -50,13 +50,13 @@
         android:textSize="30dp" />
 
     <Button
-        android:id="@+id/accessLogButton"
+        android:id="@+id/activity_access_log_bt_access_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="접속로그확인" />
 
     <ListView
-        android:id="@+id/accessLogListView"
+        android:id="@+id/activity_access_log_lv_access_log"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -4,7 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-
     <!-- 우철이가 준 색 -->
     <color name="colorMain">#43A047</color>
 
@@ -26,5 +25,4 @@
     <color name="colorSwitchOnBackground">#339037</color>
     <color name="colorSwitchOffBackground">#BBBBBB</color>
     <color name="colorSwitchThumb">#FFFFFF</color>
-    
 </resources>
