@@ -4,7 +4,7 @@ import org.checkinserviceteam.android.checkin.data.LoginJSONData
 import retrofit2.Call
 import retrofit2.http.*
 
-interface LoginService {
+interface LoginNumberService {
 
     @Headers("content-type: application/json")
     @POST("checkIN/test")

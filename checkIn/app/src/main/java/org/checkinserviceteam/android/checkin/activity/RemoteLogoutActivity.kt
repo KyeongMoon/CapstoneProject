@@ -16,4 +16,6 @@ class RemoteLogoutActivity : AppCompatActivity() {
 
 
     }
+
+
 }

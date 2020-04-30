@@ -1,16 +1,26 @@
 package org.checkinserviceteam.android.checkin.activity
 
 import android.content.SharedPreferences
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.checkinserviceteam.android.checkin.R
+import kotlinx.android.synthetic.main.activity_login.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.data.LoginJSONData
 import org.checkinserviceteam.android.checkin.service.LoginService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,74 +30,65 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(org.checkinserviceteam.android.checkin.R.layout.activity_login)
 
         /*preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext())
         editor = preferences.edit()
 
         autoLogin()*/
 
-        //TODO : retrofit2 연습
-        //var login:LoginJSONData? = null
+        //preferences = MyApplication.getPreference()
 
-        val base_url : String = "http://18.218.11.150:8080"
+        //var T = preferences.getString("testT", "No")
+        //Toast.makeText(MyApplication.getAppContext(), T, Toast.LENGTH_LONG)
+
+        //Log.d("preferences", T);
 
         //로그인 데이터 생성
-        var data = LoginJSONData("abcd@naver.com", "1234", "1234")
+        var data : LoginJSONData = LoginJSONData("abcd@naver.com", "1234", "1234")
 
-        var retrofit = Retrofit.Builder()
-            .baseUrl(base_url)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        var mapper = jacksonObjectMapper()
-        var sendData = mapper.writeValueAsString(data)
-
-        Log.d("sendData" , sendData)
-        Log.d("sendDatatoString", data.toString())
-
-//        var reData = mapper.readValue<LoginJSONData>(sendData)
-//
-//        Log.d("reData", reData.agentID)
-//        Log.d("reDatatoString", reData.toString())
-
-
-
+        var retrofit = MyApplication.getRetrofit()
 
         var loginService : LoginService = retrofit.create(LoginService::class.java)
 
-//        login_btn_login.setOnClickListener {
-//            //인자값으로 body
-//            Log.d("sendData", loginService.signup(data).toString())
-//            loginService.signup(data).enqueue(object: Callback<LoginJSONData>{
-//
-//                override fun onFailure(call: Call<LoginJSONData>, t: Throwable) {
-//                    Toast.makeText(applicationContext, "실패", Toast.LENGTH_SHORT).show()
-//                }
-//
-//                override fun onResponse(call: Call<LoginJSONData>, response: Response<LoginJSONData>) {
-//                    //TODO : use jackson and transfer
-//                    val login = response.body()
-//
-//                    Log.d("connection", response.message().byteInputStream().toString())
-//                    Log.d("connectionCode", response.code().toString())
-//                    Log.d("connectionHeaders", response.headers().toString())
-//                    Log.d("connectionBody", response.body().toString())
-//                    var mapper = jacksonObjectMapper()
-//                    var result = mapper.readValue<LoginJSONData>(login.toString(), LoginJSONData::class.java)
-//
-//                    Log.d("!!!!!!!!!!!!!!!!", result.agentID)
-//
-//                    if(login?.agentID == null)
-//                        Toast.makeText(baseContext, "null", Toast.LENGTH_SHORT).show()
-//                }
-//            })
-//        }
+
+        login_btn_login.setOnClickListener {
+            loginService.signUp(data)?.enqueue(object: Callback<LoginJSONData> {
+
+                override fun onFailure(call: Call<LoginJSONData>, t: Throwable) {
+                    Toast.makeText(applicationContext, "인터넷 연결에 실패하였습니다.", Toast.LENGTH_LONG).show()
+                    Log.d("fuck", t.toString())
+                }
+
+                override fun onResponse(call: Call<LoginJSONData>, response: Response<LoginJSONData>) {
+                    Log.d("error", response.errorBody().toString())
+
+                    Log.d("connection", response.message().byteInputStream().toString())
+                    Log.d("connectionCode", response.code().toString())
+                    Log.d("connectionHeaders", response.headers().toString())
+                    Log.d("connectionBody", response.body().toString())
+                    Log.d("connectionBodyID", "response  : ${response.body()!!.agentID}")
+
+                    //val login = response.body()
+                    //val rdata = Gson().fromJson(login.toString(), LoginJSONData::class.java)
+
+                    //if(login?.agentID == null)
+                    //    Toast.makeText(baseContext,rdata.agentID, Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
 
         //실제 구현부
         /*login_btn_login.setOnClickListener {
             login(login_input_email.toString(), login_input_password.toString())
         }*/
+    }
+    private fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
     }
 
 //    fun login(email: String, password: String) {

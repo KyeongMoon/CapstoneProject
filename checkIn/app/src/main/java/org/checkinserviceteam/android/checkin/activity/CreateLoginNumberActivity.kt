@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_create_login_number.*
+import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
+import org.checkinserviceteam.android.checkin.service.LoginService
+import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 class CreateLoginNumberActivity : AppCompatActivity() {
 
@@ -14,6 +18,18 @@ class CreateLoginNumberActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_login_number)
+
+        /*var retrofit = Retrofit.Builder()
+            .baseUrl(base_url)
+            .addConverterFactory(JacksonConverterFactory.create())
+            .client(createOkHttpClient())
+            .build()
+
+        var loginService : LoginService = retrofit.create(LoginService::class.java)*/
+
+        var retrofit = MyApplication.getRetrofit()
+
+
 
         mCountDownTimer = object : CountDownTimer(1000 * 60 * 60, 1000){
             private var i = 61

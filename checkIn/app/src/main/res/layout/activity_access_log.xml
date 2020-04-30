@@ -40,25 +40,43 @@
 
     </LinearLayout>
 
-    <!-- TODO : 필요여부에 따라 삭제-->
-    <TextView
-        android:id="@+id/activity_access_log_tv_log"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="30dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/activity_access_log_bt_access_log"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="접속로그확인" />
+        <!-- TODO : 필요여부에 따라 삭제-->
 
-    <ListView
-        android:id="@+id/activity_access_log_lv_access_log"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <ListView
+            android:id="@+id/activity_access_log_lv_access_log"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/activity_access_log_bt_access_log"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ListView>
+
+        <Button
+            android:id="@+id/activity_access_log_bt_access_log"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="200dp"
+            android:background="@color/colorGreen"
+            android:text="접속로그확인"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_access_log_lv_access_log" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </LinearLayout>
