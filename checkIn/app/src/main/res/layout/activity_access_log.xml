@@ -52,12 +52,11 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="50dp"
             app:layout_constraintBottom_toTopOf="@+id/activity_access_log_bt_access_log"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></ListView>
 
@@ -65,8 +64,6 @@
             android:id="@+id/activity_access_log_bt_access_log"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="200dp"
             android:background="@color/colorGreen"
             android:text="접속로그확인"
             android:textColor="@color/colorTextWhite"
@@ -74,7 +71,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_access_log_lv_access_log" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.75" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

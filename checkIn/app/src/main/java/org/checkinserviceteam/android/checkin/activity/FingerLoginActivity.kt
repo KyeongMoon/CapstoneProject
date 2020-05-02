@@ -1,30 +1,54 @@
 package org.checkinserviceteam.android.checkin.activity
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.activity_finger_login.*
+import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
 import java.util.concurrent.Executor
 
 class FingerLoginActivity : AppCompatActivity() {
 
-    private val executor = Executor { }
+    private lateinit var executor : Executor
+    private lateinit var preferences : SharedPreferences
+    private lateinit var editor : SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_finger_login)
 
+        executor = ContextCompat.getMainExecutor(applicationContext)
+        preferences = MyApplication.getPreference()
+        editor = MyApplication.getEditor()
 
-        //TODO : 지문 등록 실행 순서
+        /*
+        * 1. switch on
+        * 1-1 현재 실행중입니다.
+        *   => switch off 시 tv(지문으로 로그인 설명) switch(off), pref(finger login status) 변경
+        *
+        * 2. switch off
+        * 2-1 지문으로 로그인 설명
+        *   => switch on 시 dialog생성
+        *       => 성공 시 tv(현재 실행중입니다.), switch 변경, pref(finger login status) 변경
+        *       => 실패 시 변경 x
+        * */
 
+        setFingerLogin(preferences.getBoolean("fingerLoginStatus", false))
 
+        activity_finger_login_st_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                showBiometricPrompt()
+            }
 
-//        activity_finger_login_st_switch
-//        activity_finger_login_tv_text
-
+            else{
+                setFingerLogin(false)
+                setFingerLoginPref(false)
+            }
+        }
 
 //        biometric 기기에서 지원 여부
 //        val biometricManager = BiometricManager.from(this)
@@ -41,13 +65,11 @@ class FingerLoginActivity : AppCompatActivity() {
 //                        "with their account.")
 //        }
 
-        showBiometricPrompt()
-
     }
+    
     private fun showBiometricPrompt() {
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("지문으로 로그인 설정")
-            .setSubtitle("지문을 입력해주세요")
             .setNegativeButtonText("취소")
             .build()
 
@@ -56,30 +78,43 @@ class FingerLoginActivity : AppCompatActivity() {
                 override fun onAuthenticationError(errorCode: Int,
                                                    errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(applicationContext,
-                        "Authentication error: $errString", Toast.LENGTH_SHORT)
-                        .show()
+                    if(errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON)
+                        setFingerLogin(false)
                 }
 
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult) {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    val authenticatedCryptoObject: BiometricPrompt.CryptoObject? =
-                        result.getCryptoObject()
-                    // User has verified the signature, cipher, or message
-                    // authentication code (MAC) associated with the crypto object,
-                    // so you can use it in your app's crypto-driven workflows.
+                    setFingerLogin(true)
+                    setFingerLoginPref(true)
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(applicationContext, "Authentication failed",
-                        Toast.LENGTH_SHORT)
-                        .show()
                 }
             })
 
         // Displays the "log in" prompt.
         biometricPrompt.authenticate(promptInfo)
+    }
+
+    private fun setFingerLoginPref(status : Boolean){
+        Log.d("setFingerLoginPref", status.toString())
+        if(status)
+            editor.putBoolean("fingerLoginStatus", true)
+        else
+            editor.putBoolean("fingerLoginStatus", false)
+        editor.commit()
+    }
+
+    private fun setFingerLogin(status : Boolean){
+        Log.d("setFingerLogin", status.toString())
+        if(status){
+            activity_finger_login_tv_text.text = "지문으로 로그인을 사용중입니다."
+            activity_finger_login_st_switch.isChecked = true
+        }
+        else{
+            activity_finger_login_tv_text.text = "지문으로 로그인을 사용하시려면\n 우측 상단 버튼을 눌러주세요."
+            activity_finger_login_st_switch.isChecked = false
+        }
     }
 }

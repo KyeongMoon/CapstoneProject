@@ -41,18 +41,43 @@
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/activity_remote_logout_tv_logout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="30dp" />
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/activity_remote_logout_bt_logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="원격 로그아웃" />
+        <TextView
+            android:id="@+id/activity_remote_logout_tv_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="50dp"
+            android:lineHeight="32dp"
+            android:text="원격로그아웃을 실행하려면\n버튼을 눌러주세요"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/activity_remote_logout_bt_logout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/activity_remote_logout_bt_logout"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorGreen"
+            android:text="원격 로그아웃"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.75" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </LinearLayout>

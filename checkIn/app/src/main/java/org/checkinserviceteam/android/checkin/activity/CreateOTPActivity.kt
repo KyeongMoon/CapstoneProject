@@ -28,7 +28,6 @@ class CreateOTPActivity : AppCompatActivity() {
         //TODO : 광고 id로 바꾸기
         val preferences: SharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
-
         val encodedWidevineId = "@B97893"
 
         mCountDownTimer = object : CountDownTimer((1000 * 60 * 60).toLong(), 1000) {

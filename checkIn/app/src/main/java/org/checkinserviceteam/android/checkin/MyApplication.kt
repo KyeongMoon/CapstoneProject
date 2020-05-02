@@ -44,6 +44,10 @@ class MyApplication : Application() {
             return preferences
         }
 
+        fun getEditor() : SharedPreferences.Editor{
+            return preferences.edit()
+        }
+
     }
 
     override fun onCreate() {

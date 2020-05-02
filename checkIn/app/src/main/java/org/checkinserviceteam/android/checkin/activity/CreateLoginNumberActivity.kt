@@ -7,6 +7,7 @@ import android.util.Log
 import kotlinx.android.synthetic.main.activity_create_login_number.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
+import org.checkinserviceteam.android.checkin.service.LoginNumberService
 import org.checkinserviceteam.android.checkin.service.LoginService
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -19,17 +20,10 @@ class CreateLoginNumberActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_login_number)
 
-        /*var retrofit = Retrofit.Builder()
-            .baseUrl(base_url)
-            .addConverterFactory(JacksonConverterFactory.create())
-            .client(createOkHttpClient())
-            .build()
-
-        var loginService : LoginService = retrofit.create(LoginService::class.java)*/
-
+        //TODO : 네트워크 선언은 thread 외부에 선언, data var 재사용
         var retrofit = MyApplication.getRetrofit()
-
-
+        val createLoginNumberService = retrofit.create(LoginNumberService::class.java)
+        // var data
 
         mCountDownTimer = object : CountDownTimer(1000 * 60 * 60, 1000){
             private var i = 61

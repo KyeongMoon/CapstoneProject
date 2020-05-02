@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="25dp"
     android:orientation="horizontal"
     android:weightSum="1">
 
     <TextView
         android:id="@+id/item_access_log_listview_tv_time"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.3"
+        android:gravity="center"
         android:text="시간"
         android:textAlignment="center"
-        android:textSize="15dp" />
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/item_access_log_listview_tv_ip"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.3"
+        android:gravity="center_vertical"
         android:text="IP"
         android:textAlignment="center"
-        android:textSize="15dp" />
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/item_access_log_listview_tv_status"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.4"
+        android:gravity="center_horizontal"
         android:text="상태"
         android:textAlignment="center"
-        android:textSize="15dp" />
+        android:textSize="20dp" />
 
 
 </LinearLayout>
