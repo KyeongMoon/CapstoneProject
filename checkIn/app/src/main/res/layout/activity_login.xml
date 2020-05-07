@@ -45,7 +45,7 @@
             android:layout_marginBottom="8dp">
 
             <EditText
-                android:id="@+id/login_input_email"
+                android:id="@+id/activity_login_et_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
@@ -60,7 +60,7 @@
             android:layout_marginBottom="8dp">
 
             <EditText
-                android:id="@+id/login_input_password"
+                android:id="@+id/activity_login_et_pw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
@@ -68,7 +68,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/login_btn_login"
+            android:id="@+id/activity_login_bt_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"

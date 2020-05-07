@@ -1,27 +1,50 @@
 package org.checkinserviceteam.android.checkin.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
+import org.checkinserviceteam.android.checkin.data.DTO.M_LoginDTO
+import org.checkinserviceteam.android.checkin.service.LoginService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        val preferences = MyApplication.getPreference()
-//        val editor = preferences.edit()
-//
-//        editor.putString("testT", "hi").apply()
+        preferences = MyApplication.getPreference()
 
         startActivity(Intent(this, LoginActivity::class.java))
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        var currId = preferences.getString("idPref", "error").toString()
+        val currJwt = preferences.getString("jwtPref", "").toString()
+
+        var sendData = M_LoginDTO(currId, currJwt)
+        var retrofit  = MyApplication. getRetrofit()
+        var logoutService = retrofit.create(LoginService::class.java)
+
+
+        //do nothing
+        logoutService.signOut(sendData)?.enqueue(object : Callback<M_LoginDTO> {
+            override fun onFailure(call: Call<M_LoginDTO>, t: Throwable) {
+            }
+
+            override fun onResponse(call: Call<M_LoginDTO>, response: Response<M_LoginDTO>) {            }
+        })
     }
 
     fun moveCreateLoginNumberActivity(view: View) {

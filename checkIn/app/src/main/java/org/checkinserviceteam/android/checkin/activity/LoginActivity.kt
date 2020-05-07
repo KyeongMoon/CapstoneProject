@@ -1,29 +1,33 @@
 package org.checkinserviceteam.android.checkin.activity
 
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.*
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.checkinserviceteam.android.checkin.MyApplication
-import org.checkinserviceteam.android.checkin.data.LoginJSONData
+import org.checkinserviceteam.android.checkin.R
+import org.checkinserviceteam.android.checkin.data.DTO.M_LoginDTO
 import org.checkinserviceteam.android.checkin.service.LoginService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
+import java.util.*
+import java.util.concurrent.Executor
 
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var executor: Executor
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
@@ -32,63 +36,184 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(org.checkinserviceteam.android.checkin.R.layout.activity_login)
 
-        /*preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext())
-        editor = preferences.edit()
+        executor = ContextCompat.getMainExecutor(applicationContext)
+        preferences = MyApplication.getPreference()
+        editor = MyApplication.getEditor()
 
-        autoLogin()*/
+        /*
+        * 로그인 실행 흐름
+        *
+        * 1. 지문으로 로그인 off
+        *   1-1 아이디와 비밀번호 입력 후 서버 request
+        *       1-1-1 if success pref(loginIdPref, loginPwPref)
+        *           1-1-1-1 기존 계정과 다르다면 useFingerLoginPref = false
+        *       1-1-2 else if fail  pref(loginIdPref, loginPwPref) reset
+        *
+        * 2. 지문으로 로그인 on
+        *   2-1 if success
+        *       서버 request
+        *   2-2 if negative button
+        *
+        * */
 
-        //preferences = MyApplication.getPreference()
-
-        //var T = preferences.getString("testT", "No")
-        //Toast.makeText(MyApplication.getAppContext(), T, Toast.LENGTH_LONG)
-
-        //Log.d("preferences", T);
-
-        //로그인 데이터 생성
-        var data : LoginJSONData = LoginJSONData("abcd@naver.com", "1234", "1234")
-
-        var retrofit = MyApplication.getRetrofit()
-
-        var loginService : LoginService = retrofit.create(LoginService::class.java)
-
-
-        login_btn_login.setOnClickListener {
-            loginService.signUp(data)?.enqueue(object: Callback<LoginJSONData> {
-
-                override fun onFailure(call: Call<LoginJSONData>, t: Throwable) {
-                    Toast.makeText(applicationContext, "인터넷 연결에 실패하였습니다.", Toast.LENGTH_LONG).show()
-                    Log.d("fuck", t.toString())
-                }
-
-                override fun onResponse(call: Call<LoginJSONData>, response: Response<LoginJSONData>) {
-                    Log.d("error", response.errorBody().toString())
-
-                    Log.d("connection", response.message().byteInputStream().toString())
-                    Log.d("connectionCode", response.code().toString())
-                    Log.d("connectionHeaders", response.headers().toString())
-                    Log.d("connectionBody", response.body().toString())
-                    Log.d("connectionBodyID", "response  : ${response.body()!!.agentID}")
-
-                    //val login = response.body()
-                    //val rdata = Gson().fromJson(login.toString(), LoginJSONData::class.java)
-
-                    //if(login?.agentID == null)
-                    //    Toast.makeText(baseContext,rdata.agentID, Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
+        if (preferences.getBoolean("useFingerLoginPref", false))
+            showBiometricPrompt()
 
         //실제 구현부
-        /*login_btn_login.setOnClickListener {
-            login(login_input_email.toString(), login_input_password.toString())
-        }*/
+        activity_login_bt_login.setOnClickListener {
+            if(preferences.getString("deviceNamePref", "").toString() == "") {
+                showInputDeviceName()
+            }
+            else
+                requestLogin(activity_login_et_id.text.toString(), activity_login_et_pw.text.toString())
+        }
     }
-    private fun createOkHttpClient(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        builder.addInterceptor(interceptor)
-        return builder.build()
+    fun showInputDeviceName(){
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.dialog_device_name, null)
+        val alertDialog = AlertDialog.Builder(this)
+            .create()
+
+
+        var btn: Button = view.findViewById(R.id.btnDone)
+        var inmo: EditText = view.findViewById(R.id.inMobile)
+
+        btn.setOnClickListener {
+            Log.d("bt_login",activity_login_bt_login.text.toString())
+            Log.d("inmobile", inmo.text.toString())
+            var deviceName = inmo.text.toString()
+
+            editor.putString("deviceNamePref", deviceName)
+            editor.commit()
+
+            alertDialog.dismiss()
+            requestLogin(activity_login_et_id.text.toString(), activity_login_et_pw.text.toString())
+            onResume()
+        }
+
+        alertDialog.setView(view)
+        alertDialog.show()
+        onPause()
+    }
+
+    /*fun validate(): Boolean {
+        TODO("validate 수정")
+        var valid = true
+
+        val email = emailTextView.text.toString()
+        val password = passwordTextView.text.toString()
+
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailTextView.error = "enter a valid email address"
+            valid = false
+        } else {
+            emailTextView.error = null
+        }
+
+        if (password.isEmpty() || password.length < 4 || password.length > 10) {
+            passwordTextView.error = "between 4 and 10 alphanumeric characters"
+            valid = false
+        } else {
+            passwordTextView.error = null
+        }
+
+        return valid
+    }*/
+
+    private fun showBiometricPrompt() {
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("지문으로 로그인 설정")
+            .setNegativeButtonText("취소")
+            .build()
+
+        val biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(
+                    errorCode: Int,
+                    errString: CharSequence
+                ) {
+                    super.onAuthenticationError(errorCode, errString)
+                    if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+
+                    }
+                }
+
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    val id: String = preferences.getString("id", "error").toString()
+                    val pw: String = preferences.getString("pw", "error").toString()
+                    requestLogin(id, pw)
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                }
+            })
+
+        // Displays the "log in" prompt.
+        biometricPrompt.authenticate(promptInfo)
+    }
+
+    private fun requestLogin(id: String, pw: String) {
+
+        var deviceId = preferences.getString("deviceIdPref", "").toString()
+        var deviceName = preferences.getString("deviceNamePref", "").toString()
+
+        if(deviceId == "") {
+            deviceId = UUID.randomUUID().toString()
+            editor.putString("deviceIdPref", deviceId)
+            editor.commit()
+        }
+
+        val retrofit = MyApplication.getRetrofit()
+        var sendData =
+            M_LoginDTO(
+                id,
+                pw,
+                deviceId,
+                deviceName
+            )
+        val loginService = retrofit.create(LoginService::class.java)
+
+        loginService.signIn(sendData).enqueue(object : Callback<M_LoginDTO> {
+            override fun onFailure(call: Call<M_LoginDTO>, t: Throwable) {
+                Log.d("onFailure", t.toString())
+                Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onResponse(call: Call<M_LoginDTO>, response: Response<M_LoginDTO>) {
+                //login result true
+                var result = response.body()!!.result
+
+                editor.putString("jwtPref", response.body()?.jwt)
+                editor.commit()
+
+                when (result) {
+                    1 -> {
+                        //기존 계정과 다르다면
+                        if (preferences.getString("id", "error") != id) {
+                            editor.putBoolean("useFingerLoginPref", false)
+                            editor.putString("idPref", id)
+                            editor.putString("pwPref", pw)
+                            editor.commit()
+                        }
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
+                    2 -> {
+                        //Waiting for authentication
+                        Toast.makeText(applicationContext, "PC에서 모바일 기기 인증을 확인해주세요", Toast.LENGTH_LONG).show()
+                    }
+                    //login result false
+                    0 -> {
+                        editor.clear()
+                        editor.commit()
+                        Toast.makeText(applicationContext, "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+            }
+        })
     }
 
 //    fun login(email: String, password: String) {
@@ -251,36 +376,6 @@ class LoginActivity : AppCompatActivity() {
 //        }
 //
 //    }
-//
-//    inner class FingerBioFactory(
-//        private val activity: AppCompatActivity,
-//        private val callback: BiometricPrompt.AuthenticationCallback
-//    ) {
-//        private var myBiometricPrompt: BiometricPrompt? = null
-//        private var biPromptInfo: BiometricPrompt.PromptInfo? = null
-//
-//        init {
-//            setting()
-//        }
-//
-//        private fun setting() {
-//            val newExecutor = Executors.newSingleThreadExecutor()
-//
-//            biPromptInfo = BiometricPrompt.PromptInfo.Builder()
-//                .setTitle("지문으로 로그인하기")
-//                .setDescription("지문을 입력해주세요")
-//                .setNegativeButtonText("취소")
-//                .build()
-//
-//            myBiometricPrompt = BiometricPrompt(activity, newExecutor, callback)
-//        }
-//
-//        fun authenticate() {
-//            myBiometricPrompt!!.authenticate(biPromptInfo)
-//        }
-//    }
-//
-//
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 //        super.onActivityResult(requestCode, resultCode, data)
 //        if (requestCode == REQUEST_SIGNUP) {
@@ -310,32 +405,28 @@ class LoginActivity : AppCompatActivity() {
 //        loginButton.isEnabled = true
 //    }
 //
-//    fun validate(): Boolean {
-//        var valid = true
-//
-//        val email = emailTextView.text.toString()
-//        val password = passwordTextView.text.toString()
-//
-//        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-//            emailTextView.error = "enter a valid email address"
-//            valid = false
-//        } else {
-//            emailTextView.error = null
-//        }
-//
-//        if (password.isEmpty() || password.length < 4 || password.length > 10) {
-//            passwordTextView.error = "between 4 and 10 alphanumeric characters"
-//            valid = false
-//        } else {
-//            passwordTextView.error = null
-//        }
-//
-//        return valid
-//    }
 //
 //    companion object {
 //
 //        private val TAG = "LoginActivity"
 //        private val REQUEST_SIGNUP = 0
+//    }
+
+    //    private fun getDeviceId(): String{
+//        lateinit var encodedWidevineId : String
+//
+//        val WIDEVINE_UUID = UUID(-0x121074568629b532L, -0x5c37d8232ae2de13L)
+//
+//        val wvDrm = try {
+//            MediaDrm(WIDEVINE_UUID)
+//        } catch(e: UnsupportedSchemeException){
+//            null
+//        }
+//        wvDrm!!.apply {
+//            val widevineID = wvDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
+//            encodedWidevineId = widevineID.toString()
+//            wvDrm.close()
+//        }
+//        return encodedWidevineId
 //    }
 }

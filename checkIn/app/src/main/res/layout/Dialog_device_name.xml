@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center_vertical"
+        android:text="기기이름을 입력해주세요."
+        android:textColor="@color/colorTextBlack"
+        android:textSize="22dp" />
+
+
+    <EditText
+        android:id="@+id/inMobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="60dp"
+        android:hint="예) 내 핸드폰 1"
+        android:inputType="text"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorGreen"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="20dp"
+        android:text="확인"
+        android:textColor="@color/colorTextWhite"
+        android:textSize="17dp" />
+</LinearLayout>

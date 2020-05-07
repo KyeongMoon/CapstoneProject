@@ -11,6 +11,7 @@
 
     <color name="colorGreen">#00AF66</color>
     <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorTextBlack">#000000</color>
     <color name="colorBackground">#242424</color>
     <color name="colorBackground2">#292929</color>
     <color name="colorActionBar">#171717</color>

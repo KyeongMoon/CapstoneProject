@@ -3,15 +3,18 @@ package org.checkinserviceteam.android.checkin
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.checkinserviceteam.android.checkin.service.LoginService
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.*
 
 class MyApplication : Application() {
 
@@ -29,7 +32,8 @@ class MyApplication : Application() {
                 masterKeyAlias,
                 context,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
         }
 
         fun getAppContext(): Context {
@@ -40,11 +44,11 @@ class MyApplication : Application() {
             return retrofit
         }
 
-        fun getPreference() : SharedPreferences{
+        fun getPreference(): SharedPreferences {
             return preferences
         }
 
-        fun getEditor() : SharedPreferences.Editor{
+        fun getEditor(): SharedPreferences.Editor {
             return preferences.edit()
         }
 
@@ -56,17 +60,62 @@ class MyApplication : Application() {
         context = applicationContext
 
         retrofit = Retrofit.Builder()
-            .baseUrl("http://54.180.153.254:8080/")
+            .baseUrl("https://54.180.153.254/")
             .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper()))
             .client(createOkHttpClient())
             .build()
     }
 
     private fun createOkHttpClient(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        builder.addInterceptor(interceptor)
-        return builder.build()
+        return try {
+            // Create a trust manager that does not validate certificate chains
+            val trustAllCerts =
+                arrayOf<TrustManager>(
+                    object : X509TrustManager {
+                        @Throws(CertificateException::class)
+                        override fun checkClientTrusted(
+                            chain: Array<X509Certificate>,
+                            authType: String
+                        ) {
+                        }
+
+                        @Throws(CertificateException::class)
+                        override fun checkServerTrusted(
+                            chain: Array<X509Certificate>,
+                            authType: String
+                        ) {
+                        }
+
+                        override fun getAcceptedIssuers(): Array<X509Certificate> {
+                            return arrayOf<X509Certificate>()
+                        }
+                    }
+                )
+
+            // Install the all-trusting trust manager
+            val sslContext = SSLContext.getInstance("SSL")
+            sslContext.init(null, trustAllCerts, SecureRandom())
+            // Create an ssl socket factory with our all-trusting manager
+            val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory
+            val builder = OkHttpClient.Builder()
+
+            //val builder = OkHttpClient.Builder()
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            builder.addInterceptor(interceptor)
+            //return builder.build()
+
+
+
+            builder.sslSocketFactory(sslSocketFactory)
+            builder.hostnameVerifier(object : HostnameVerifier {
+                override fun verify(hostname: String?, session: SSLSession?): Boolean {
+                    return true
+                }
+            })
+            builder.build()
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
     }
 }

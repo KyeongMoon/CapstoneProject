@@ -45,8 +45,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- TODO : 필요여부에 따라 삭제-->
-
         <ListView
             android:id="@+id/activity_access_log_lv_access_log"
             android:layout_width="0dp"
