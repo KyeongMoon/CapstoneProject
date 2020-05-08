@@ -7,7 +7,7 @@ import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
 import org.checkinserviceteam.android.checkin.adater.AccessLogListViewAdapter
 import org.checkinserviceteam.android.checkin.data.AccessLogListViewData
-import org.checkinserviceteam.android.checkin.service.LoginNumberService
+import org.checkinserviceteam.android.checkin.retrofit.service.LoginNumberService
 import java.util.*
 
 class AccessLogActivity : AppCompatActivity() {

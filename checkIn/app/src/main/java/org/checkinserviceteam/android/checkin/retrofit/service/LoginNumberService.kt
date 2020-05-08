@@ -1,6 +1,6 @@
-package org.checkinserviceteam.android.checkin.service
+package org.checkinserviceteam.android.checkin.retrofit.service
 
-import org.checkinserviceteam.android.checkin.data.DTO.M_LoginNumberDTO
+import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginNumberDTO
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -9,7 +9,7 @@ interface LoginNumberService {
 
     @Headers("content-type: application/json")
     @POST("checkIN/loginNumber")
-    fun signUp(
+    fun requestLoginNumber(
         @Body body : M_LoginNumberDTO
     ): Call<M_LoginNumberDTO>
 

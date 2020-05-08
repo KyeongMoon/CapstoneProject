@@ -31,6 +31,14 @@
         <activity android:name=".activity.FingerLoginActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.CreateOTPActivity" />
+
+
+        <service android:name=".service.SignOutService"
+                android:enabled="true"
+                android:exported="false"
+                android:stopWithTask="false"/>
     </application>
+
+
 
     </manifest>

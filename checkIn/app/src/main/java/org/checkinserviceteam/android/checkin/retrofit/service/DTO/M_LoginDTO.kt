@@ -1,4 +1,4 @@
-package org.checkinserviceteam.android.checkin.data.DTO
+package org.checkinserviceteam.android.checkin.retrofit.service.DTO
 
 data class M_LoginDTO(
     var agentID: String?,

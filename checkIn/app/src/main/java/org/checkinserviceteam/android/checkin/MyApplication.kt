@@ -9,12 +9,18 @@ import androidx.security.crypto.MasterKeys
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginDTO
+import org.checkinserviceteam.android.checkin.retrofit.service.LoginService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
+import kotlin.system.exitProcess
 
 class MyApplication : Application() {
 
@@ -22,6 +28,7 @@ class MyApplication : Application() {
 
         private lateinit var context: Context
         private lateinit var retrofit: Retrofit
+        private lateinit var androidDefaultUEH: Thread.UncaughtExceptionHandler
 
         private val preferences: SharedPreferences by lazy {
             val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
@@ -52,6 +59,10 @@ class MyApplication : Application() {
             return preferences.edit()
         }
 
+        fun getAndroidDefault(): Thread.UncaughtExceptionHandler{
+            return androidDefaultUEH
+        }
+
     }
 
     override fun onCreate() {
@@ -64,6 +75,10 @@ class MyApplication : Application() {
             .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper()))
             .client(createOkHttpClient())
             .build()
+
+        androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler()
+
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler())
     }
 
     private fun createOkHttpClient(): OkHttpClient {
@@ -117,5 +132,33 @@ class MyApplication : Application() {
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
+    }
+
+    private class UncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
+        override fun uncaughtException(t: Thread, e: Throwable) {
+            Log.d("Myapplication", "onDestroyStart")
+
+            var currId = preferences.getString("idPref", "error").toString()
+            val currJwt = preferences.getString("jwtPref", "").toString()
+
+            var sendData = M_LoginDTO(currId, currJwt)
+            var retrofit  = MyApplication. getRetrofit()
+            var logoutService = retrofit.create(LoginService::class.java)
+
+
+            //do nothing
+            logoutService.signOut(sendData)?.enqueue(object : Callback<M_LoginDTO> {
+                override fun onFailure(call: Call<M_LoginDTO>, t: Throwable) {
+                }
+
+                override fun onResponse(call: Call<M_LoginDTO>, response: Response<M_LoginDTO>) {            }
+            })
+            Log.d("Myapplication", "onDestroyEnd")
+
+
+            android.os.Process.killProcess(android.os.Process.myPid())
+            exitProcess(10);
+        }
+
     }
 }

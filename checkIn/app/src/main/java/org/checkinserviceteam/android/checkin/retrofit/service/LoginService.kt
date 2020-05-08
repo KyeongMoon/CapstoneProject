@@ -1,6 +1,6 @@
-package org.checkinserviceteam.android.checkin.service
+package org.checkinserviceteam.android.checkin.retrofit.service
 
-import org.checkinserviceteam.android.checkin.data.DTO.M_LoginDTO
+import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginDTO
 import retrofit2.Call
 import retrofit2.http.*
 

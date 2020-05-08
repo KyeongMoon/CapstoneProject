@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_create_login_number.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
-import org.checkinserviceteam.android.checkin.data.DTO.M_LoginNumberDTO
-import org.checkinserviceteam.android.checkin.service.LoginNumberService
+import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginNumberDTO
+import org.checkinserviceteam.android.checkin.retrofit.service.LoginNumberService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CreateLoginNumberActivity : AppCompatActivity() {
 
@@ -22,13 +26,13 @@ class CreateLoginNumberActivity : AppCompatActivity() {
 
         preferences = MyApplication.getPreference()
 
-        //TODO : 네트워크 선언은 thread 외부에 선언, data var 재사용
         var retrofit = MyApplication.getRetrofit()
         val createLoginNumberService = retrofit.create(LoginNumberService::class.java)
         val sendData =
             M_LoginNumberDTO(
                 preferences.getString("idPref", "").toString(),
-                preferences.getString("deviceIdPref", "").toString()
+                preferences.getString("deviceIdPref", "").toString(),
+                preferences.getString("jwtPref","").toString()
             )
 
         mCountDownTimer = object : CountDownTimer(1000 * 60 * 60, 1000){
@@ -40,11 +44,26 @@ class CreateLoginNumberActivity : AppCompatActivity() {
                 if(i == 0 || i == 61){
 
                     //TODO : 서버와 1분단위 연결 및 서버요청 대기 시 원형 progressbar
+                    createLoginNumberService.requestLoginNumber(sendData).enqueue(object: Callback<M_LoginNumberDTO>{
+                        override fun onFailure(call: Call<M_LoginNumberDTO>, t: Throwable) {
+                            Log.d("onFailure", t.toString())
+                            Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_LONG).show()
+                        }
 
-
-                    //TODO : 서버에 요청과 수신하여 tv에 반영
-
-
+                        override fun onResponse(call: Call<M_LoginNumberDTO>, response: Response<M_LoginNumberDTO>) {
+                            var result = response.body()!!.result
+                            if (result!!) {
+                                val loginNumber: String? = response.body()!!.LoginNumber
+                                activity_create_login_number_tv_login_number.text =
+                                    loginNumber!!.substring(0, 4) + " " + loginNumber!!.substring(
+                                        4,
+                                        8
+                                    )
+                            }
+                            else
+                                Toast.makeText(applicationContext, "a;lsdjklfj", Toast.LENGTH_SHORT).show()
+                        }
+                    })
 
                     i = 60
                 }

@@ -1,4 +1,6 @@
-package org.checkinserviceteam.android.checkin.data.DTO
+package org.checkinserviceteam.android.checkin.retrofit.service.DTO
+
+import org.checkinserviceteam.android.checkin.retrofit.service.DTO.item.M_AccessLogItem
 
 data class M_AccessLogDTO(
     var agentID: String,

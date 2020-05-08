@@ -16,8 +16,8 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
-import org.checkinserviceteam.android.checkin.data.DTO.M_LoginDTO
-import org.checkinserviceteam.android.checkin.service.LoginService
+import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginDTO
+import org.checkinserviceteam.android.checkin.retrofit.service.LoginService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
