@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_create_login_number.*
 import org.checkinserviceteam.android.checkin.MyApplication
@@ -14,11 +15,15 @@ import org.checkinserviceteam.android.checkin.retrofit.service.LoginNumberServic
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
 
 class CreateLoginNumberActivity : AppCompatActivity() {
 
     lateinit var mCountDownTimer: CountDownTimer
     lateinit var preferences: SharedPreferences
+    lateinit var retrofit: Retrofit
+    lateinit var createLoginNumberService: LoginNumberService
+    lateinit var sendData: M_LoginNumberDTO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,14 +31,18 @@ class CreateLoginNumberActivity : AppCompatActivity() {
 
         preferences = MyApplication.getPreference()
 
-        var retrofit = MyApplication.getRetrofit()
-        val createLoginNumberService = retrofit.create(LoginNumberService::class.java)
-        val sendData =
+        retrofit = MyApplication.getRetrofit()
+        createLoginNumberService = retrofit.create(LoginNumberService::class.java)
+        sendData =
             M_LoginNumberDTO(
                 preferences.getString("idPref", "").toString(),
                 preferences.getString("deviceIdPref", "").toString(),
                 preferences.getString("jwtPref","").toString()
             )
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         mCountDownTimer = object : CountDownTimer(1000 * 60 * 60, 1000){
             private var i = 61
@@ -78,11 +87,13 @@ class CreateLoginNumberActivity : AppCompatActivity() {
         }
 
         mCountDownTimer.start()
-
     }
 
-    override fun onDestroy() {
-        mCountDownTimer.onFinish()
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
+        mCountDownTimer.cancel()
+    }
+    fun FinishActivity(view: View){
+        finish()
     }
 }

@@ -140,8 +140,8 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    val id: String = preferences.getString("id", "error").toString()
-                    val pw: String = preferences.getString("pw", "error").toString()
+                    val id: String = preferences.getString("idPref", "error").toString()
+                    val pw: String = preferences.getString("pwPref", "error").toString()
                     requestLogin(id, pw)
                 }
 
@@ -191,7 +191,7 @@ class LoginActivity : AppCompatActivity() {
                 when (result) {
                     1 -> {
                         //기존 계정과 다르다면
-                        if (preferences.getString("id", "error") != id) {
+                        if (preferences.getString("idPref", "error") != id) {
                             editor.putBoolean("useFingerLoginPref", false)
                             editor.putString("idPref", id)
                             editor.putString("pwPref", pw)

@@ -23,8 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startService(Intent(this,
-            SignOutService::class.java))
+        startService(Intent(this, SignOutService::class.java))
 
         preferences = MyApplication.getPreference()
 

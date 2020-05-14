@@ -15,7 +15,7 @@
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:onClick="FinishActivity">
+            android:onClick= "FinishActivity">
 
             <ImageView
                 android:layout_width="32dp"

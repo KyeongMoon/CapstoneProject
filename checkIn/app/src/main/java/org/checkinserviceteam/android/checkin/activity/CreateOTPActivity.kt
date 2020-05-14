@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_create_otp.*
+import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -19,15 +21,20 @@ import kotlin.experimental.and
 class CreateOTPActivity : AppCompatActivity() {
 
     lateinit var mCountDownTimer: CountDownTimer
+    lateinit var preferences: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_otp)
 
+        preferences = MyApplication.getPreference()
 
-        //TODO : 광고 id로 바꾸기
-        val preferences: SharedPreferences = getPreferences(Context.MODE_PRIVATE)
+    }
 
+    override fun onStart() {
+
+        //TODO : id 를 뭐로 할까ㅛ~
         val encodedWidevineId = "@B97893"
 
         mCountDownTimer = object : CountDownTimer((1000 * 60 * 60).toLong(), 1000) {
@@ -52,6 +59,13 @@ class CreateOTPActivity : AppCompatActivity() {
             }
         }
         mCountDownTimer.start()
+        super.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mCountDownTimer.cancel()
+        Toast.makeText(applicationContext, "onStop", Toast.LENGTH_SHORT).show()
     }
 
     private fun UpdateOTP(UUID: String): Int {
@@ -119,9 +133,7 @@ class CreateOTPActivity : AppCompatActivity() {
 
         return result
     }
-
-    override fun onDestroy() {
-        mCountDownTimer.onFinish()
-        super.onDestroy()
+    fun FinishActivity(view: View){
+        finish()
     }
 }

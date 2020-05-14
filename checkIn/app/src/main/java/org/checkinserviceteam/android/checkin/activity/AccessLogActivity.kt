@@ -1,6 +1,7 @@
 package org.checkinserviceteam.android.checkin.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_access_log.*
 import org.checkinserviceteam.android.checkin.MyApplication
@@ -59,5 +60,8 @@ class AccessLogActivity : AppCompatActivity() {
 
         }
 
+    }
+    fun FinishActivity(view: View){
+        finish()
     }
 }

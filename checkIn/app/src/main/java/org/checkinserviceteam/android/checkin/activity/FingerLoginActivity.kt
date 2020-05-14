@@ -1,8 +1,10 @@
 package org.checkinserviceteam.android.checkin.activity
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -37,7 +39,7 @@ class FingerLoginActivity : AppCompatActivity() {
         *       => 실패 시 변경 x
         * */
 
-        setFingerLogin(preferences.getBoolean("fingerLoginStatus", false))
+        setFingerLogin(preferences.getBoolean("useFingerLoginPref", false))
 
         activity_finger_login_st_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
@@ -100,9 +102,9 @@ class FingerLoginActivity : AppCompatActivity() {
     private fun setFingerLoginPref(status : Boolean){
         Log.d("setFingerLoginPref", status.toString())
         if(status)
-            editor.putBoolean("fingerLoginStatus", true)
+            editor.putBoolean("useFingerLoginPref", true)
         else
-            editor.putBoolean("fingerLoginStatus", false)
+            editor.putBoolean("useFingerLoginPref", false)
         editor.commit()
     }
 
@@ -116,5 +118,9 @@ class FingerLoginActivity : AppCompatActivity() {
             activity_finger_login_tv_text.text = "지문으로 로그인을 사용하시려면\n 우측 상단 버튼을 눌러주세요."
             activity_finger_login_st_switch.isChecked = false
         }
+    }
+
+    fun FinishActivity(view: View){
+        finish()
     }
 }

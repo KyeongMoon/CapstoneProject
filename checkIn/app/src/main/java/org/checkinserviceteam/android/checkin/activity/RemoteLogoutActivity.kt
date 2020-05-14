@@ -3,6 +3,7 @@ package org.checkinserviceteam.android.checkin.activity
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import kotlinx.android.synthetic.main.activity_remote_logout.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
@@ -20,6 +21,8 @@ class RemoteLogoutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_remote_logout)
+
+        preferences = MyApplication.getPreference()
 
         val currId = preferences.getString("idPref", "").toString()
         val currDeviceId = preferences.getString("deviceIdPref", "").toString()
@@ -47,5 +50,8 @@ class RemoteLogoutActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+    fun FinishActivity(view: View){
+        finish()
     }
 }
