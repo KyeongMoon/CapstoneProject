@@ -10,6 +10,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_create_login_number.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
+import org.checkinserviceteam.android.checkin.adater.LoadingDialog
 import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginNumberDTO
 import org.checkinserviceteam.android.checkin.retrofit.service.LoginNumberService
 import retrofit2.Call
@@ -24,6 +25,7 @@ class CreateLoginNumberActivity : AppCompatActivity() {
     lateinit var retrofit: Retrofit
     lateinit var createLoginNumberService: LoginNumberService
     lateinit var sendData: M_LoginNumberDTO
+    lateinit var loadingDialog: LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,7 @@ class CreateLoginNumberActivity : AppCompatActivity() {
                 preferences.getString("deviceIdPref", "").toString(),
                 preferences.getString("jwtPref","").toString()
             )
+        loadingDialog = LoadingDialog(this)
     }
 
     override fun onStart() {
@@ -51,18 +54,19 @@ class CreateLoginNumberActivity : AppCompatActivity() {
                 Log.v("Log_tag", "Tick of Progress$i$millisUntilFinished")
 
                 if(i == 0 || i == 61){
+                    loadingDialog.startLoadingDialog()
 
-                    //TODO : 서버와 1분단위 연결 및 서버요청 대기 시 원형 progressbar
                     createLoginNumberService.requestLoginNumber(sendData).enqueue(object: Callback<M_LoginNumberDTO>{
                         override fun onFailure(call: Call<M_LoginNumberDTO>, t: Throwable) {
                             Log.d("onFailure", t.toString())
+                            loadingDialog.dismissDialog()
                             Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_LONG).show()
                         }
 
                         override fun onResponse(call: Call<M_LoginNumberDTO>, response: Response<M_LoginNumberDTO>) {
                             var result = response.body()!!.result
-                            if (result!!) {
-                                val loginNumber: String? = response.body()!!.LoginNumber
+                            if (result == 1) {
+                                val loginNumber: String? = response.body()!!.loginNumber
                                 activity_create_login_number_tv_login_number.text =
                                     loginNumber!!.substring(0, 4) + " " + loginNumber!!.substring(
                                         4,
@@ -70,7 +74,8 @@ class CreateLoginNumberActivity : AppCompatActivity() {
                                     )
                             }
                             else
-                                Toast.makeText(applicationContext, "a;lsdjklfj", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                            loadingDialog.dismissDialog()
                         }
                     })
 

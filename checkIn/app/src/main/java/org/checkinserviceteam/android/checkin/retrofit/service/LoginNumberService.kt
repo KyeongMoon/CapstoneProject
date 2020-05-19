@@ -8,7 +8,7 @@ interface LoginNumberService {
 //TODO : implementation
 
     @Headers("content-type: application/json")
-    @POST("checkIN/loginNumber")
+    @POST("checkIN/loginNumber/create")
     fun requestLoginNumber(
         @Body body : M_LoginNumberDTO
     ): Call<M_LoginNumberDTO>

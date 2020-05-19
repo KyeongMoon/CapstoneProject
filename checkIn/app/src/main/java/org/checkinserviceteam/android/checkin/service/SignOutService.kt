@@ -45,7 +45,7 @@ class SignOutService : Service() {
 //            }
 //        })
 
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         Log.d("onTaskRemoved", "end")
 
         this.stopSelf()

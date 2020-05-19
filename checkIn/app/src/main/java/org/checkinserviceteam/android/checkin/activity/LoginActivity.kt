@@ -1,5 +1,6 @@
 package org.checkinserviceteam.android.checkin.activity
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
+import org.checkinserviceteam.android.checkin.adater.LoadingDialog
 import org.checkinserviceteam.android.checkin.retrofit.service.DTO.M_LoginDTO
 import org.checkinserviceteam.android.checkin.retrofit.service.LoginService
 import retrofit2.Call
@@ -24,24 +27,7 @@ import retrofit2.Response
 import java.util.*
 import java.util.concurrent.Executor
 
-
-class LoginActivity : AppCompatActivity() {
-
-    private lateinit var executor: Executor
-    private lateinit var preferences: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(org.checkinserviceteam.android.checkin.R.layout.activity_login)
-
-        executor = ContextCompat.getMainExecutor(applicationContext)
-        preferences = MyApplication.getPreference()
-        editor = MyApplication.getEditor()
-
-        /*
-        * 로그인 실행 흐름
+/*      * 로그인 실행 흐름
         *
         * 1. 지문으로 로그인 off
         *   1-1 아이디와 비밀번호 입력 후 서버 request
@@ -55,6 +41,21 @@ class LoginActivity : AppCompatActivity() {
         *   2-2 if negative button
         *
         * */
+
+class LoginActivity : AppCompatActivity() {
+
+    private lateinit var executor: Executor
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+
+        executor = ContextCompat.getMainExecutor(applicationContext)
+        preferences = MyApplication.getPreference()
+        editor = MyApplication.getEditor()
 
         if (preferences.getBoolean("useFingerLoginPref", false))
             showBiometricPrompt()
@@ -156,6 +157,22 @@ class LoginActivity : AppCompatActivity() {
 
     private fun requestLogin(id: String, pw: String) {
 
+//                //TODO : 뭔소리여 , progressbar 색상변경
+//        //R.style.AppTheme_Dark_Dialog
+//        val progressDialog = ProgressDialog(
+//            this@LoginActivity,
+//            R.style.Theme_AppCompat_DayNight_Dialog
+//        )
+//
+//        //TODO : 로그인 시 progressbar 진행
+//        progressDialog.isIndeterminate = true
+//        progressDialog.setMessage("Authenticating...")
+//        progressDialog.show()
+
+        var loadingDialog = LoadingDialog(this)
+        loadingDialog.startLoadingDialog()
+
+
         var deviceId = preferences.getString("deviceIdPref", "").toString()
         var deviceName = preferences.getString("deviceNamePref", "").toString()
 
@@ -202,7 +219,11 @@ class LoginActivity : AppCompatActivity() {
                     }
                     2 -> {
                         //Waiting for authentication
-                        Toast.makeText(applicationContext, "PC에서 모바일 기기 인증을 확인해주세요", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "PC에서 모바일 기기 인증을 확인해주세요",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     //login result false
                     0 -> {
@@ -212,6 +233,7 @@ class LoginActivity : AppCompatActivity() {
                             .show()
                     }
                 }
+                loadingDialog.dismissDialog()
             }
         })
     }

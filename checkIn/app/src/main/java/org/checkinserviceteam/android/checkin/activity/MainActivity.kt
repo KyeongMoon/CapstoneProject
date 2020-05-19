@@ -17,6 +17,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
+    val TAG : String = "MainActivity"
     private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,14 +28,12 @@ class MainActivity : AppCompatActivity() {
 
         preferences = MyApplication.getPreference()
 
-        Thread.setDefaultUncaughtExceptionHandler(MyApplication.getAndroidDefault())
+        //Thread.setDefaultUncaughtExceptionHandler(MyApplication.getAndroidDefault())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        //stopService(Intent(this, SignOutService::class.java))
-        Log.d("onDestroy", "start")
-
+        Log.d(TAG, "DestroyStart")
 
         val currId = preferences.getString("idPref", "error").toString()
         val currJwt = preferences.getString("jwtPref", "").toString()
@@ -44,23 +43,19 @@ class MainActivity : AppCompatActivity() {
             MyApplication.getRetrofit()
         var logoutService = retrofit.create(LoginService::class.java)
 
-
         //do nothing
         logoutService.signOut(sendData)?.enqueue(object : Callback<M_LoginDTO> {
             override fun onFailure(call: Call<M_LoginDTO>, t: Throwable) {
-                Log.d("MainActivity", "fail")
+                Log.d(TAG, "signOutFail")
 
             }
 
             override fun onResponse(call: Call<M_LoginDTO>, response: Response<M_LoginDTO>) {
-                Log.d("MainActivity", "success")
+                Log.d(TAG, "signOutSuccess")
             }
         })
 
-        Log.d("onDestroy", "end")
-
-
-
+        Log.d(TAG, "DestroyEnd")
     }
 
     fun moveCreateLoginNumberActivity(view: View) {
