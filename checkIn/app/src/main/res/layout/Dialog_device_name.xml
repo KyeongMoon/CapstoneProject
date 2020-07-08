@@ -18,7 +18,7 @@
 
 
     <EditText
-        android:id="@+id/inMobile"
+        android:id="@+id/dialog_device_name_et_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
@@ -28,7 +28,7 @@
         android:padding="12dp" />
 
     <Button
-        android:id="@+id/btnDone"
+        android:id="@+id/dialog_device_name_bt_complete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"

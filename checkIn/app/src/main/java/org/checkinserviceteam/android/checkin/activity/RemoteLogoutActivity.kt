@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_remote_logout.*
 import org.checkinserviceteam.android.checkin.MyApplication
 import org.checkinserviceteam.android.checkin.R
@@ -28,9 +29,6 @@ class RemoteLogoutActivity : AppCompatActivity() {
         val currDeviceId = preferences.getString("deviceIdPref", "").toString()
         val currJwt = preferences.getString("jwtPref", "").toString()
 
-        activity_remote_logout_bt_logout
-        activity_remote_logout_tv_logout
-
         var retrofit = MyApplication.getRetrofit()
         val remoteLogoutService = retrofit.create(RemoteLogoutService::class.java)
         val sendData = M_RemoteLogoutDTO(currId, currDeviceId, currJwt)
@@ -46,7 +44,7 @@ class RemoteLogoutActivity : AppCompatActivity() {
                     call: Call<M_RemoteLogoutDTO>,
                     response: Response<M_RemoteLogoutDTO>
                 ) {
-                    TODO("Not yet implemented")
+                    Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
                 }
             })
         }

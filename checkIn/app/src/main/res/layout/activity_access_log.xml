@@ -45,18 +45,65 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/activity_access_log_lv_access_log"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="35dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/activity_access_log_bt_access_log"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></ListView>
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/tableTopBackground"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:gravity="center"
+                    android:text="시간"
+                    android:textAlignment="center"
+                    android:textColor="@color/tableTopText"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:gravity="center"
+
+                    android:text="IP"
+                    android:textAlignment="center"
+                    android:textColor="@color/tableTopText"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:gravity="center"
+                    android:text="상태"
+                    android:textAlignment="center"
+                    android:textColor="@color/tableTopText"
+                    android:textSize="17dp" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/activity_access_log_lv_access_log"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/activity_access_log_bt_access_log"
@@ -70,7 +117,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.75" />
+            app:layout_constraintVertical_bias="0.8" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

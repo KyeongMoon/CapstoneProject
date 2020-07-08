@@ -4,8 +4,14 @@ import org.checkinserviceteam.android.checkin.retrofit.service.DTO.item.M_Access
 
 data class M_AccessLogDTO(
     var agentID: String,
-    var deviceID: String,
-    var accessLogItemArrayList: ArrayList<M_AccessLogItem>,
     var jwt: String,
-    var result: Boolean
-)
+    var result: Boolean,
+    var accessLogItemArrayList: List<M_AccessLogItem>
+) {
+    constructor(agentID: String, jwt: String) : this(
+        agentID,
+        jwt,
+        true,
+        listOf()
+    )
+}

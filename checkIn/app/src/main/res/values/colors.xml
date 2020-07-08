@@ -7,7 +7,7 @@
     <!-- 우철이가 준 색 -->
     <color name="colorMain">#43A047</color>
 
-
+    <color name="dialogBackground">#AA000000</color>
 
     <color name="colorGreen">#00AF66</color>
     <color name="colorTextWhite">#FFFFFF</color>
@@ -15,6 +15,10 @@
     <color name="colorBackground">#242424</color>
     <color name="colorBackground2">#292929</color>
     <color name="colorActionBar">#171717</color>
+
+    <!-- 표 배경 색 -->
+    <color name="tableTopBackground">#DDDDDD</color>
+    <color name="tableTopText">#555555</color>
 
     <!-- 메뉴 구분선 -->
     <color name="colorMenuLine">#444444</color>

@@ -58,4 +58,8 @@ dependencies {
 
     //crypto
     implementation 'androidx.security:security-crypto:1.0.0-rc01'
+    
+    //Advertising ID
+    implementation 'androidx.ads:ads-identifier:1.0.0-alpha01'
+    implementation 'com.google.guava:guava:28.0-android'
 }

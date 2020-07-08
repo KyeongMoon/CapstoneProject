@@ -9,7 +9,7 @@ interface AccessLogService {
 
     @Headers("content-type: application/json")
     @POST("checkIN/accessLog")
-    fun signUp(
+    fun requestLog(
         @Body body : M_AccessLogDTO
     ): Call<M_AccessLogDTO>
 
