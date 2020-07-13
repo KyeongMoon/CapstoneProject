@@ -48,12 +48,12 @@ class CreateLoginNumberActivity : AppCompatActivity() {
         super.onStart()
 
         mCountDownTimer = object : CountDownTimer(1000 * 60 * 60, 1000){
-            private var i = 61
+            private var i = 21
 
             override fun onTick(millisUntilFinished: Long) {
                 Log.v("Log_tag", "Tick of Progress$i$millisUntilFinished")
 
-                if(i == 0 || i == 61){
+                if(i == 0 || i == 21){
                     loadingDialog.startLoadingDialog()
 
                     createLoginNumberService.requestLoginNumber(sendData).enqueue(object: Callback<M_LoginNumberDTO>{
@@ -79,7 +79,7 @@ class CreateLoginNumberActivity : AppCompatActivity() {
                         }
                     })
 
-                    i = 60
+                    i = 20
                 }
                 activity_create_login_number_pb_login_number.progress = i
                 activity_create_login_number_tv_sec.text = "$i 초"

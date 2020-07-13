@@ -3,6 +3,8 @@ package org.checkinserviceteam.android.checkin.activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.MediaDrm
+import android.media.UnsupportedSchemeException
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -61,25 +63,11 @@ class LoginActivity : AppCompatActivity() {
         preferences = MyApplication.getPreference()
         editor = MyApplication.getEditor()
 
-        var task = object : AsyncTask<Void, Void, String>(){
-            override fun onPostExecute(result: String?) {
-                Toast.makeText(applicationContext, result, Toast.LENGTH_SHORT).show()
-                super.onPostExecute(result)
-            }
-
-            override fun doInBackground(vararg params: Void?): String {
-                var idInfo = AdvertisingIdClient.getAdvertisingIdInfo(applicationContext).get().id
-                Log.d("idInfo", idInfo)
-                return idInfo
-            }
+        if(preferences.getString("deviceIdPref", "null") == "null"){
+            val deviceId = UUID.randomUUID().toString()
+            editor.putString("deviceIdPref", deviceId)
+            editor.commit()
         }
-
-        task.execute()
-
-
-
-
-
 
         if (preferences.getBoolean("useFingerLoginPref", false))
             showBiometricPrompt()
@@ -107,6 +95,8 @@ class LoginActivity : AppCompatActivity() {
 
         deviceNameCompleteBtn.setOnClickListener {
             var deviceName = deviceName.text.toString()
+            editor.putString("deviceNamePref", deviceName)
+            editor.commit()
 
             deviceNameDialog.dismiss()
             requestLogin(activity_login_et_id.text.toString(), activity_login_et_pw.text.toString())
@@ -115,7 +105,6 @@ class LoginActivity : AppCompatActivity() {
 
         deviceNameDialog.setView(view)
         deviceNameDialog.show()
-        //onPause()
     }
 
     private fun showBiometricPrompt() {
@@ -132,8 +121,7 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     super.onAuthenticationError(errorCode, errString)
                     if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                        editor.clear()
-                        editor.commit()
+                        clearEditor()
                     }
                 }
 
@@ -160,13 +148,6 @@ class LoginActivity : AppCompatActivity() {
 
         var deviceId : String = preferences.getString("deviceIdPref", "").toString()
         var deviceName = preferences.getString("deviceNamePref", "").toString()
-
-        if (deviceId == "") {
-            deviceId = determineAdvertisingInfo()
-            Log.d("deviceIdret", deviceId)
-            editor.putString("deviceIdPref", deviceId)
-            editor.commit()
-        }
 
         val retrofit = MyApplication.getRetrofit()
         var sendData =
@@ -196,7 +177,6 @@ class LoginActivity : AppCompatActivity() {
                         //기존 계정과 다르다면
                         if (preferences.getString("idPref", "error") != id) {
                             editor.putBoolean("useFingerLoginPref", false)
-                            editor.putString("deviceNamePref", deviceName)
                             editor.putString("idPref", id)
                             editor.putString("pwPref", pw)
                             editor.commit()
@@ -214,8 +194,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                     //login result false
                     0 -> {
-                        editor.clear()
-                        editor.commit()
+                        clearEditor()
                         Toast.makeText(applicationContext, "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_LONG)
                             .show()
                     }
@@ -225,10 +204,12 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    //TODO("광고 아이디가 안 가져와져요우")
     private fun determineAdvertisingInfo(): String {
         lateinit var ret: String
 
-        if (AdvertisingIdClient.isAdvertisingIdProviderAvailable(applicationContext)) {
+
+        if (AdvertisingIdClient.isAdvertisingIdProviderAvailable(MyApplication.getAppContext())) {
             Log.d("if statement", "ok")
             val advertisingIdInfoListenableFuture =
                 AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)
@@ -253,8 +234,18 @@ class LoginActivity : AppCompatActivity() {
                 }, Executors.newSingleThreadExecutor()
             )
         } else {
+            Log.d("else statement", "else")
             ret = UUID.randomUUID().toString()
         }
         return ret
     }
+
+    private fun clearEditor(){
+        val uuid = preferences.getString("deviceIdPref", "")
+
+        editor.clear()
+        editor.putString("deviceIdPref", uuid)
+        editor.commit()
+    }
+
 }
