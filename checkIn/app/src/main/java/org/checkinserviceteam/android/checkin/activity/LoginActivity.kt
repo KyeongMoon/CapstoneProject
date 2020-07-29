@@ -3,9 +3,6 @@ package org.checkinserviceteam.android.checkin.activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.MediaDrm
-import android.media.UnsupportedSchemeException
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,9 +26,11 @@ import org.checkinserviceteam.android.checkin.retrofit.service.LoginService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import kotlin.experimental.and
 
 /*      * 로그인 실행 흐름
         *
@@ -148,12 +147,14 @@ class LoginActivity : AppCompatActivity() {
 
         var deviceId : String = preferences.getString("deviceIdPref", "").toString()
         var deviceName = preferences.getString("deviceNamePref", "").toString()
+        val hashPw = encryptSha256(pw)
+        Log.d("Sha256", hashPw)
 
         val retrofit = MyApplication.getRetrofit()
         var sendData =
             M_LoginDTO(
                 id,
-                pw,
+                hashPw,
                 deviceId,
                 deviceName
             )
@@ -247,5 +248,19 @@ class LoginActivity : AppCompatActivity() {
         editor.putString("deviceIdPref", uuid)
         editor.commit()
     }
+    
+    private fun encryptSha256(plainText : String) : String {
+        val HEX_CHARS = "0123456789abcdef"
+        val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+        val bytes = md.digest(plainText.toByteArray())
 
+        val result = StringBuilder(bytes.size * 2)
+
+        bytes.forEach {
+            val i = it.toInt()
+            result.append(HEX_CHARS[i shr 4 and 0x0f])
+            result.append(HEX_CHARS[i and 0x0f])
+        }
+        return result.toString()
+    }
 }

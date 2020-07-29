@@ -32,10 +32,10 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="72dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/ic_launcher_checkin" />
 
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout
